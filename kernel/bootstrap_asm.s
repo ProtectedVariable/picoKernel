@@ -1,5 +1,6 @@
 global entrypoint  ; the entry point symbol defined in kernel.ld
 
+extern kernelEntry
 ; Values for the multiboot header
 MULTIBOOT_MAGIC        equ 0x1BADB002
 MULTIBOOT_ALIGN_MODS   equ 1
@@ -27,23 +28,14 @@ entrypoint:
 	; code starts executing here
 	cli  ; disable hardware interrupts
 
-	mov eax, 0xB87C2 ;middle of the framebuffer minus half of the word
-  mov word [eax], 0x0948 ;H
-  mov word [eax+2], 0x0965;e
-  mov word [eax+4], 0x096C;l
-  mov word [eax+6], 0x096C;l
-  mov word [eax+8], 0x096F;o
-  mov word [eax+12], 0x0957;W
-  mov word [eax+14], 0x096F;o
-  mov word [eax+16], 0x0972;r
-  mov word [eax+18], 0x096C;l
-  mov word [eax+20], 0x0964;d
-	; TODO :
 	; - Initialize the stack pointer and EBP (both to the same value)
-	; - Pass the multiboot info to the kernel
-	; - Call the kernel entry point (C code)
-	; ...
+	mov esp, stack_base
+	mov ebp, stack_base
 
+	; - Pass the multiboot info to the kernel
+	push ebx
+	; - Call the kernel entry point (C code)
+	call kernelEntry
 	; infinite loop (should never get here)
 .forever:
 	hlt
@@ -53,3 +45,7 @@ entrypoint:
 ; TODO : declare a .stack section for the kernel. It should at least be 1MB long. Given this stack
 ; area won't be initialized, the nobits keyword should be added when declaring the section.
 ; ...
+
+section .stack nobits
+	resb 2000000
+stack_base
