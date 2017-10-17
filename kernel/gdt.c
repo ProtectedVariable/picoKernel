@@ -1,8 +1,9 @@
 #include "../common/types.h"
 #include "gdt.h"
 #include "x86.h"
+#include <util.h>
 
-static gdt_entry_t[3] gdt;
+static gdt_entry_t gdt[3];
 
 // Pointeur sur la table GDT
 static gdt_ptr_t gdt_ptr;
