@@ -27,6 +27,17 @@ entrypoint:
 	; code starts executing here
 	cli  ; disable hardware interrupts
 
+	mov eax, 0xB87C2 ;middle of the framebuffer minus half of the word
+  mov word [eax], 0x0948 ;H
+  mov word [eax+2], 0x0965;e
+  mov word [eax+4], 0x096C;l
+  mov word [eax+6], 0x096C;l
+  mov word [eax+8], 0x096F;o
+  mov word [eax+12], 0x0957;W
+  mov word [eax+14], 0x096F;o
+  mov word [eax+16], 0x0972;r
+  mov word [eax+18], 0x096C;l
+  mov word [eax+20], 0x0964;d
 	; TODO :
 	; - Initialize the stack pointer and EBP (both to the same value)
 	; - Pass the multiboot info to the kernel
