@@ -31,7 +31,6 @@ entrypoint:
 	; - Initialize the stack pointer and EBP (both to the same value)
 	mov esp, stack_base
 	mov ebp, stack_base
-
 	; - Pass the multiboot info to the kernel
 	push ebx
 	; - Call the kernel entry point (C code)
@@ -40,11 +39,6 @@ entrypoint:
 .forever:
 	hlt
 	jmp .forever
-
-;---------------------------------------------------------------------------------------------------
-; TODO : declare a .stack section for the kernel. It should at least be 1MB long. Given this stack
-; area won't be initialized, the nobits keyword should be added when declaring the section.
-; ...
 
 section .stack nobits
 	resb 2000000

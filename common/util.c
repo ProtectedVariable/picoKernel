@@ -31,3 +31,7 @@ int strncmp(const char* p, const char* q, uint n) {
   } while(p[i] != 0 && q[i] != 0 && i <= n);
   return 0;
 }
+
+int c2Dto1D(int x, int y, int xmax) {
+  return y * xmax + x;
+}
