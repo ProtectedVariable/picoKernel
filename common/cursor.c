@@ -12,7 +12,7 @@ void getCursorPosition(cursor_t* buffer) {
 }
 
 void incrementCursor(int maxX) {
-  if(cursor.x == maxX) {
+  if(cursor.x == maxX - 1) {
     cursor.x = 0;
     cursor.y++;
   } else {
