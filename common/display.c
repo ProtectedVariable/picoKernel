@@ -1,8 +1,14 @@
 #include "display.h"
 
+void initDisplay() {
+  clearScreen();
+  moveCursor(0, 0);
+}
+
 void printString(char* str) {
-  for (int i = 0; str[i]; i++) {
+  for (int i = 0; str[i];) {
     printChar(str[i]);
+    i++;
   }
 }
 
@@ -22,8 +28,9 @@ void printChar(char c) {
     moveCursor(0, cursor.y);
     return;
   }
-  memset((void*) (0xB8000 + (c2Dto1D(cursor.x, cursor.y, FRAMBUFFER_WIDTH) * 2)), c, 1);
-  memset((void*) (0xB8000 + (c2Dto1D(cursor.x, cursor.y, FRAMBUFFER_WIDTH) * 2) + 1), color, 1);
+  void* address = (void*) (FRAMBUFFER_START + (c2Dto1D(cursor.x, cursor.y, FRAMBUFFER_WIDTH) * 2));
+  memset(address, c, 1);
+  memset(address + 1, color, 1);
   incrementCursor(FRAMBUFFER_WIDTH);
 }
 
@@ -32,11 +39,25 @@ void setColor(int textcolor) {
   color |= textcolor;
 }
 
+int getColor() {
+  return color & 0x0F;
+}
+
 void setBackground(int backcolor) {
   color &= 0x0F;
   color |= backcolor << 4;
 }
 
+int getBackground() {
+  return color & 0xF0 >> 4;
+}
+
 void clearScreen() {
-  memset(FRAMBUFFER_START, 0, 0xFA0);
+  for (int i = 0; i < 0xFA0; i++) {
+    if(i % 2 == 1) {
+      memset(FRAMBUFFER_START + i, color, 1);
+    } else {
+      memset(FRAMBUFFER_START + i, 0, 1);
+    }
+  }
 }

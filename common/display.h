@@ -20,12 +20,15 @@
 #define YELLOW 14
 #define WHITE 15
 
-static int color = 0x0F;
+static uint8_t color = 0x0F;
 
+void initDisplay();
 void printString(char* str);
 void printChar(char c);
 void setColor(int textcolor);
+int getColor();
 void setBackground(int backcolor);
+int getBackground();
 void clearScreen();
 
 #endif /* end of include guard: _DISPLAY_H_ */

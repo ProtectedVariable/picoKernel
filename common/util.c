@@ -6,7 +6,7 @@ void memset(void* dst, int value, uint count) {
   do {
     ptr[p] = value;
     p++;
-  } while(p <= count);
+  } while(p < count);
 }
 
 void memcpy(void* dst, void* src, uint count) {
@@ -16,7 +16,7 @@ void memcpy(void* dst, void* src, uint count) {
   do {
     ptrd[i] = ptrs[i];
     i++;
-  } while(i <= count);
+  } while(i < count);
 }
 
 int strncmp(const char* p, const char* q, uint n) {

@@ -27,7 +27,7 @@ inb:
   leave
   ret
 
-inb:
+inw:
   enter 0, 0
   mov eax, 0
   mov dx, [ebp+8]
