@@ -1,5 +1,7 @@
 #include "util.h"
 
+#include "display.h"
+
 void memset(void* dst, int value, uint count) {
   char* ptr = (char*) dst;
   uint p = 0;
@@ -38,10 +40,10 @@ int c2Dto1D(int x, int y, int xmax) {
 
 void itoa(char* buffer, int i, int radix) {
 	int index = 0;
-	char inverted[10] = {0};
+	char inverted[10];
 	for(int modulator = radix ; modulator > 0 ; modulator *= radix) {
 		inverted[index] = ((i % modulator) / (modulator / radix));
-		inverted[index] < 10 ? inverted[index] += 48 : inverted[index] += 87;
+		inverted[index] = inverted[index] < 10 ? inverted[index] + 48 : inverted[index] + 87;
 		index++;
 	}
 	if(radix == 10)
@@ -49,20 +51,21 @@ void itoa(char* buffer, int i, int radix) {
 	else if(radix == 16)
 	{
 		inverted[index] = (i / 268435456);
-		inverted[index] < 10 ? inverted[index] += 48 : inverted[index] += 87;
+		inverted[index] = inverted[index] < 10 ? inverted[index] + 48 : inverted[index] + 87;
 	}
 
 	int currentIndex = 0;
 	if(i < 0)
 		buffer[currentIndex++] = '-';
 
+    int significantValue = 0;
 	for(int i = 9 ; i >= 0 ; i--) {
-		int significantValue = 0;
-		if(inverted[index] != 0 || significantValue) {
+		if(inverted[index] != '0' || significantValue) {
 			significantValue = 1;
 			buffer[currentIndex++] = inverted[index];
 		}
 	}
 
-	buffer[currentIndex] = '\0';
+	buffer[9] = '\0';
+    printf("%s\n", buffer);
 }

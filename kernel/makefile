@@ -18,4 +18,4 @@ gdt.o: gdt.h x86.h ../common/types.h gdt.c
 	gcc -m32 -Wall -Wextra -I../common -I./ -std="gnu11" $(FLAGS) -c gdt.c -o gdt.o
 
 clean:
-	rm *.o
+	-rm *.o
