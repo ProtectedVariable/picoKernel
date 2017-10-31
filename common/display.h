@@ -30,5 +30,6 @@ int getColor();
 void setBackground(int backcolor);
 int getBackground();
 void clearScreen();
+void printf(char* format, ...);
 
 #endif /* end of include guard: _DISPLAY_H_ */

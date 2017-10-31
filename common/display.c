@@ -60,4 +60,41 @@ void clearScreen() {
       memset(FRAMBUFFER_START + i, 0, 1);
     }
   }
+
+  void printf(char* format, ...) {
+	  int argumentCount = 4;
+	  for(int i = 0 ; format[i] ; i++) {
+		  if(format[i] == '%') {
+			  switch(format[i + 1]) {
+			      case 'd':
+				  	char image[12] = {0};
+					itoa(image, format + argumentCount, 10);
+				  	printString(image);
+	  			  	argumentCount += 4;
+					break;
+				  case 's':
+				  	printString(format + argumentCount);
+					argumentCount += 4;
+					break;
+				  case 'c':
+				  	printChar(*(format + argumentCount));
+					argumentCount += 4;
+					break;
+				  case 'x':
+				  	char image[12] = {0};
+					itoa(image, format + argumentCount, 16);
+				  	printString("0x");
+				  	printString(image);
+	  			  	argumentCount += 4;
+					break;
+				  case '%':
+				  	printChar('%');
+					break;
+			  }
+			  i++;
+		  }
+		  else
+		  	printChar(format[i]);
+	  }
+  }
 }
