@@ -70,7 +70,7 @@
             if(format[i] == '%') {
                 switch(format[i + 1]) {
                     case 'd':
-                        itoa(image, *arg, 10);
+                        itoa(image, *((int*)arg), 10);
                         printString(image);
                         break;
                     case 's':
