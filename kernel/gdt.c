@@ -60,7 +60,7 @@ void gdt_init() {
 	gdt[1] = gdt_make_code_segment(0, 0xFFFFFFFF, DPL_KERNEL);
 	gdt[2] = gdt_make_data_segment(0, 0xFFFFFFFF, DPL_KERNEL);
 
-	gdt_ptr.base = &gdt;
+	gdt_ptr.base = (int)&gdt;
 	gdt_ptr.limit = sizeof(gdt_entry_t) * 3;
 
     // Load the GDT

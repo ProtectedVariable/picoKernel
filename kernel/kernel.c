@@ -1,18 +1,25 @@
 #include "kernel.h"
 #include <util.h>
 #include "gdt.h"
+#include <cursor.h>
 #include <display.h>
-#include "../common/cursor.h"
+
+void test() {
+
+}
 
 void kernelEntry(multiboot_info_t* inf) {
     gdt_init();
     initDisplay();
-    splashScreen();
-    moveCursor(0, 24);
-    printChar('>');
-    printf("_%d_%x_%s_%c_%%", 11, 12, "10", 'W');
+    //splashScreen();
+    #ifndef TEST
+        moveCursor(0, 24);
+        printChar('>');
+    #else
+        test();
+    #endif
 }
-
+/*
 void splashScreen() {
     splashP(22, 7);
     splashK(28, 4);
@@ -89,3 +96,4 @@ void splashE(int bx, int by) {
         printChar(i == 6 || i == 12 || i == 10 ? ' ' : 0xDB);
     }
 }
+*/

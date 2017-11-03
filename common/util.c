@@ -22,7 +22,7 @@ void memcpy(void* dst, void* src, uint count) {
 }
 
 int strncmp(const char* p, const char* q, uint n) {
-  int i = 0;
+  uint i = 0;
   do {
     if(p[i] > q[i]) {
       return 1;

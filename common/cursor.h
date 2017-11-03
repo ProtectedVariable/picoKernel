@@ -16,8 +16,6 @@ typedef struct cursor_t {
   int y;
 } cursor_t;
 
-static cursor_t cursor;
-
 void moveCursor(int x, int y);
 void getCursorPosition(cursor_t* buffer);
 void incrementCursor(int maxX);

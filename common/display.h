@@ -20,8 +20,6 @@
 #define YELLOW 14
 #define WHITE 15
 
-static uint8_t color = 0x0F;
-
 void initDisplay();
 void printString(char* str);
 void printChar(char c);

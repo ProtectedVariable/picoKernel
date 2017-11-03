@@ -1,5 +1,7 @@
 #include "cursor.h"
 
+static cursor_t cursor;
+
 void moveCursor(int x, int y) {
   cursor.x = x;
   cursor.y = y;

@@ -7,4 +7,4 @@ all: cursor.o display.o util.o
 	gcc -m32 -Wall -Wextra -I../kernel $(FLAGS) -std="gnu11" -c $< -o $@
 
 clean:
-	-rm *.o
+	-rm *.o -f
