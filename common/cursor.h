@@ -2,6 +2,7 @@
 #define _CURSOR_H_
 #include "util.h"
 #include "../kernel/pio.h"
+#include "display.h"
 
 #ifndef CURSOR_CMD
 #define CURSOR_CMD 0x3d4

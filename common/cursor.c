@@ -19,7 +19,12 @@ void getCursorPosition(cursor_t* buffer) {
 
 void incrementCursor(int maxX) {
   if(cursor.x == maxX - 1) {
-    moveCursor(0, cursor.y + 1);
+    if(cursor.y + 1 >= FRAMBUFFER_HEIGHT) {
+        scroll();
+        moveCursor(0, cursor.y);
+    } else {
+        moveCursor(0, cursor.y + 1);
+    }
   } else {
     moveCursor(cursor.x + 1, cursor.y);
   }

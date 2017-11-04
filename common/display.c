@@ -99,3 +99,7 @@ void printf(char* format, ...) {
         printChar(format[i]);
     }
 }
+
+void scroll() {
+    memcpy(FRAMBUFFER_START, FRAMBUFFER_START + (FRAMBUFFER_WIDTH * 2), (FRAMBUFFER_HEIGHT * FRAMBUFFER_WIDTH) * 2);
+}

@@ -6,6 +6,9 @@ BOOT_DIR := $(BUILD_DIR)/boot
 
 all: $(BUILD_DIR) $(SUBDIRS) $(GRUB_DIR)/menu.lst $(GRUB_DIR)/stage2_eltorito $(BOOT_DIR)/kernel.elf picok.iso
 
+test: OBJ_FILES += kernel/test.o
+test: all
+
 run:
 	qemu-system-i386 -cdrom picok.iso
 

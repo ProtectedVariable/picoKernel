@@ -2,16 +2,17 @@
 
 #include "display.h"
 
-void memset(void* dst, int value, uint count) {
+void* memset(void* dst, int value, uint count) {
   char* ptr = (char*) dst;
   uint p = 0;
   do {
     ptr[p] = value;
     p++;
   } while(p < count);
+  return dst;
 }
 
-void memcpy(void* dst, void* src, uint count) {
+void* memcpy(void* dst, void* src, uint count) {
   char* ptrd = (char*) dst;
   char* ptrs = (char*) src;
   uint i = 0;
@@ -19,6 +20,7 @@ void memcpy(void* dst, void* src, uint count) {
     ptrd[i] = ptrs[i];
     i++;
   } while(i < count);
+  return dst;
 }
 
 int strncmp(const char* p, const char* q, uint n) {
