@@ -22,10 +22,10 @@ void printChar(char c) {
         moveCursor(0, cursor.y + 1);
         return;
     } else if(c == '\t') {
-        incrementCursor(FRAMBUFFER_WIDTH);
-        incrementCursor(FRAMBUFFER_WIDTH);
-        incrementCursor(FRAMBUFFER_WIDTH);
-        incrementCursor(FRAMBUFFER_WIDTH);
+        incrementCursor();
+        incrementCursor();
+        incrementCursor();
+        incrementCursor();
         return;
     } else if(c == '\r') {
         moveCursor(0, cursor.y);
@@ -34,7 +34,7 @@ void printChar(char c) {
     void* address = (void*) (FRAMBUFFER_START + (c2Dto1D(cursor.x, cursor.y, FRAMBUFFER_WIDTH) * 2));
     memset(address, c, 1);
     memset(address + 1, color, 1);
-    incrementCursor(FRAMBUFFER_WIDTH);
+    incrementCursor();
 }
 
 void setColor(int textcolor) {
@@ -77,7 +77,6 @@ void printf(char* format, ...) {
                 printString(image);
                 break;
                 case 's':
-
                 printString(*(char**)arg);
                 break;
                 case 'c':
@@ -101,5 +100,17 @@ void printf(char* format, ...) {
 }
 
 void scroll() {
-    memcpy(FRAMBUFFER_START, FRAMBUFFER_START + (FRAMBUFFER_WIDTH * 2), (FRAMBUFFER_HEIGHT * FRAMBUFFER_WIDTH) * 2);
+    memcpy(FRAMBUFFER_START, FRAMBUFFER_START + (FRAMBUFFER_WIDTH * 2), ((FRAMBUFFER_HEIGHT * FRAMBUFFER_WIDTH) * 2) - FRAMBUFFER_WIDTH * 2);
+    clearZone(0, FRAMBUFFER_HEIGHT - 1, FRAMBUFFER_WIDTH);
+}
+
+void clearZone(int x, int y, int size) {
+    int start = c2Dto1D(x, y, FRAMBUFFER_WIDTH) * 2;
+    for (int i = start; i < start + size * 2; i++) {
+        if(i % 2 == 1) {
+            memset(FRAMBUFFER_START + i, color, 1);
+        } else {
+            memset(FRAMBUFFER_START + i, 0, 1);
+        }
+    }
 }

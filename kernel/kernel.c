@@ -10,7 +10,6 @@
 void kernelEntry(multiboot_info_t* inf) {
     #ifndef TEST
         initDisplay();
-        moveCursor(0, 0);
         printf("Display Initialized\n");
         gdt_init();
         printf("GDT Initialized\n");
@@ -18,6 +17,7 @@ void kernelEntry(multiboot_info_t* inf) {
         moveCursor(0, 24);
         printChar('>');
     #else
+        gdt_init();
         test();
     #endif
 }

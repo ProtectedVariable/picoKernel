@@ -30,5 +30,5 @@ int getBackground();
 void clearScreen();
 void printf(char* format, ...);
 void scroll();
-
+void clearZone(int x, int y, int size);
 #endif /* end of include guard: _DISPLAY_H_ */

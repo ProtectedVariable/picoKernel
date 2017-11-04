@@ -62,7 +62,7 @@ void itoa(char* buffer, int n, int radix) {
 
     int significantValue = 0;
 	for(int i = 9 ; i >= 0 ; i--) {
-		if(inverted[i] != '0' || significantValue) {
+		if(inverted[i] != '0' || significantValue || i == 0) {
 			significantValue = 1;
 			buffer[currentIndex++] = inverted[i];
 		}
