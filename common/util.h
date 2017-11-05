@@ -1,9 +1,16 @@
+/* Utility functions
+ * Ibanez Thomas, Vincent Tournier
+ */
 #ifndef _UTIL_H_
 #define _UTIL_H_
 #include "types.h"
 
 #ifndef FRAMBUFFER_WIDTH
 #define FRAMBUFFER_WIDTH 80
+#endif
+
+#ifndef FRAMBUFFER_SIZE
+#define FRAMBUFFER_SIZE 0xFA0
 #endif
 
 #ifndef FRAMBUFFER_HEIGHT

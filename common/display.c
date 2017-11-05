@@ -56,7 +56,7 @@ int getBackground() {
 }
 
 void clearScreen() {
-    for (int i = 0; i < 0xFA0; i++) {
+    for (int i = 0; i < FRAMBUFFER_SIZE; i++) {
         if(i % 2 == 1) {
             memset(FRAMBUFFER_START + i, color, 1);
         } else {

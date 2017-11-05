@@ -1,3 +1,6 @@
+/* All cursor-related functions
+ * Ibanez Thomas, Vincent Tournier
+ */
 #ifndef _CURSOR_H_
 #define _CURSOR_H_
 #include "util.h"

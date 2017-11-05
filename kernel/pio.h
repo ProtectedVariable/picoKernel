@@ -1,3 +1,6 @@
+/* All pio-related functions
+ * Ibanez Thomas, Vincent Tournier
+ */
 #ifndef _PIO_H_
 #define _PIO_H_
 #include <stdint.h>

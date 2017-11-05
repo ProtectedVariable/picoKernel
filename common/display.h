@@ -1,3 +1,6 @@
+/* All text-based display functions
+ * Ibanez Thomas, Vincent Tournier
+ */
 #ifndef _DISPLAY_H_
 #define _DISPLAY_H_
 #include "types.h"

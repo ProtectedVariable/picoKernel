@@ -1,3 +1,6 @@
+/* Kernel main file
+ * Ibanez Thomas, Vincent Tournier
+ */
 #ifndef __KERNEL__PANIC__
 #define __KERNEL__PANIC__
 #include "multiboot.h"
