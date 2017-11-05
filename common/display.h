@@ -20,15 +20,70 @@
 #define YELLOW 14
 #define WHITE 15
 
+/**
+ * Initialize the display and puts the cursor to position 0,0 (upper left)
+ */
 void initDisplay();
+
+/**
+ * Prints a given string to the screen
+ * @param str the string to print
+ */
 void printString(char* str);
+
+/**
+ * Prints a given character to the screen
+ * @param c the character to print
+ */
 void printChar(char c);
+
+/**
+ * Sets the text color
+ * @param textcolor the new text color (0-15)
+ */
 void setColor(int textcolor);
+
+/**
+ * Gets the current text color
+ * @return the current text color
+ */
 int getColor();
+
+/**
+ * Sets the background color
+ * @param backcolor the new background color
+ */
 void setBackground(int backcolor);
+
+/**
+ * Gets the current background color
+ * @return the current background color
+ */
 int getBackground();
+
+/**
+ * Clears the screen, the screen will be set to the current background color
+ */
 void clearScreen();
+
+/**
+ * Prints the string with it's arguments
+ * Available formats are: %d (decimal), %x (hex), %s(string) and %c(char)
+ * @param format  Format of the string
+ * @param VARARGS arguments to format into the string
+ */
 void printf(char* format, ...);
+
+/**
+ * Scrolls the screen, the new line will be set to the current background color
+ */
 void scroll();
+
+/**
+ * Clears a zone, the zone will be set to the current background color
+ * @param x    x-coordinate of the beginning of the zone
+ * @param y    y-coordinate of the beginning of the zone
+ * @param size size of the zone (in characters)
+ */
 void clearZone(int x, int y, int size);
 #endif /* end of include guard: _DISPLAY_H_ */
