@@ -9,7 +9,7 @@ all: $(BUILD_DIR) $(SUBDIRS) $(GRUB_DIR)/menu.lst $(GRUB_DIR)/stage2_eltorito $(
 test: OBJ_FILES += kernel/test.o
 test: all
 
-run:
+run: all
 	qemu-system-i386 -cdrom picok.iso
 
 $(BOOT_DIR)/kernel.elf: $(OBJ_FILES)

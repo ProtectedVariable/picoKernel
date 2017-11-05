@@ -6,6 +6,6 @@
  * Entry point of the kernel
  * @param inf grub infomations
  */
-void kernelEntry(multiboot_info_t* inf);
+extern void kernelEntry(multiboot_info_t* inf);
 
 #endif

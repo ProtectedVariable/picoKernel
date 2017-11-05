@@ -22,17 +22,17 @@ typedef struct cursor_t {
  * @param x new x position
  * @param y new y position
  */
-void moveCursor(int x, int y);
+extern void moveCursor(int x, int y);
 
 /**
  * Gets the cursor current position
  * @param buffer buffer to write the position to
  */
-void getCursorPosition(cursor_t* buffer);
+extern void getCursorPosition(cursor_t* buffer);
 
 /**
  * Increments cursor position
  */
-void incrementCursor();
+extern void incrementCursor();
 
 #endif /* end of include guard: _CURSOR_H_ */

@@ -6,6 +6,7 @@ test: FLAGS += -DTEST
 test: test.o all
 	@echo "Test version"
 
+run: all
 
 test.o: test.c test.h
 	gcc -m32 -Wall -Wextra -I../common -std="gnu11" $(FLAGS) -c test.c -o test.o
