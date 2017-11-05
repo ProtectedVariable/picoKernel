@@ -1,10 +1,13 @@
 #include "test.h"
 #include <display.h>
+#include <util.h>
 
 static void testDisplay();
+static void testUtil();
 
 void test() {
     testDisplay();
+    testUtil();
 }
 
 static void testDisplay() {
@@ -58,5 +61,38 @@ static void testDisplay() {
     setBackground(LIGHT_RED);printString("LIGHT_RED");
     setBackground(LIGHT_MAGENTA);printString("LIGHT_MAGENTA");
     setBackground(YELLOW);printString("Yellow");
-    setBackground(WHITE);printString("White");
+    setBackground(WHITE);printString("White\n");
+    setBackground(BLACK);
+}
+
+static void testUtil() {
+    printf("Testing Util functions\n");
+    printf("STRCMP Test:");
+    if(!(strcmp("", "") == 0)) {
+        printf("FAIL_0");
+    } else if(!(strncmp("aba", "abc", 2) == 0)) {
+        printf("FAIL_1");
+    } else if(!(strcmp("The quick brown fox jumps over the lazy dog", "The quick brown fox jumps over the lazy dog") == 0)) {
+        printf("FAIL_3");
+    } else if(strcmp("A", "B") > 0) {
+        printf("FAIL_4");
+    } else if(strcmp("C", "B") < 0) {
+        printf("FAIL_5");
+    } else {
+        printf("OK\n");
+    }
+
+    printf("ITOA Test:");
+    char buffer[9];
+    if(strcmp(itoa(buffer, 0, 10), "0") != 0) {
+        printf("FAIL_0");
+    } else if(strcmp(itoa(buffer, 543, 10), "543") != 0) {
+        printf("FAIL_1");
+    } else if(strcmp(itoa(buffer, 54332, 16), "d43c") != 0) {
+        printf("FAIL_2");
+    } else if(strcmp(itoa(buffer, -532, 10), "-532") != 0) {
+        printf("FAIL_3 %s", buffer);
+    } else {
+        printf("OK\n");
+    }
 }

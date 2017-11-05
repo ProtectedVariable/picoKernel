@@ -31,13 +31,21 @@ extern void* memset(void* dst, int value, uint count);
 extern void* memcpy(void* dst, void* src, uint count);
 
 /**
- * Compares to strings n first characters
+ * Compares two string's n first characters
  * @param  p first string
  * @param  q second string
- * @param  n number of characters to compare
+ * @param  n maximum number of characters to compare
  * @return   -1 if p < q, 1 if p > q, 0 if p = q
  */
 extern int strncmp(const char *p, const char *q, uint n);
+
+/**
+ * Compares two string
+ * @param  p first string
+ * @param  q second string
+ * @return   -1 if p < q, 1 if p > q, 0 if p = q
+ */
+extern int strcmp(const char *p, const char *q);
 
 /**
  * Converts a 2d coordinate to a 1d coordinate
@@ -54,6 +62,6 @@ extern int c2Dto1D(int x, int y, int xmax);
  * @param n      number to parse
  * @param radix  base to convert to
  */
-extern void itoa(char* buffer, int n, int radix);
+extern char* itoa(char* buffer, int n, int radix);
 
 #endif /* end of include guard: _UTIL_H_ */
