@@ -2,3 +2,4 @@ picok/
 *.o
 *.elf
 *.iso
+*.DS_Store
