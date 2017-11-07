@@ -42,4 +42,4 @@ entrypoint:
 
 section .stack nobits
 	resb 2000000
-stack_base
+stack_base:

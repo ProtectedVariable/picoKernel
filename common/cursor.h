@@ -1,7 +1,11 @@
+/* All cursor-related functions
+ * Ibanez Thomas, Vincent Tournier
+ */
 #ifndef _CURSOR_H_
 #define _CURSOR_H_
 #include "util.h"
 #include "../kernel/pio.h"
+#include "display.h"
 
 #ifndef CURSOR_CMD
 #define CURSOR_CMD 0x3d4
@@ -16,10 +20,22 @@ typedef struct cursor_t {
   int y;
 } cursor_t;
 
-static cursor_t cursor;
+/**
+ * Changes cursor position
+ * @param x new x position
+ * @param y new y position
+ */
+extern void moveCursor(int x, int y);
 
-void moveCursor(int x, int y);
-void getCursorPosition(cursor_t* buffer);
-void incrementCursor(int maxX);
+/**
+ * Gets the cursor current position
+ * @param buffer buffer to write the position to
+ */
+extern void getCursorPosition(cursor_t* buffer);
+
+/**
+ * Increments cursor position
+ */
+extern void incrementCursor();
 
 #endif /* end of include guard: _CURSOR_H_ */

@@ -2,16 +2,17 @@
 
 #include "display.h"
 
-void memset(void* dst, int value, uint count) {
+void* memset(void* dst, int value, uint count) {
   char* ptr = (char*) dst;
   uint p = 0;
   do {
     ptr[p] = value;
     p++;
   } while(p < count);
+  return dst;
 }
 
-void memcpy(void* dst, void* src, uint count) {
+void* memcpy(void* dst, void* src, uint count) {
   char* ptrd = (char*) dst;
   char* ptrs = (char*) src;
   uint i = 0;
@@ -19,10 +20,11 @@ void memcpy(void* dst, void* src, uint count) {
     ptrd[i] = ptrs[i];
     i++;
   } while(i < count);
+  return dst;
 }
 
 int strncmp(const char* p, const char* q, uint n) {
-  int i = 0;
+  uint i = 0;
   do {
     if(p[i] > q[i]) {
       return 1;
@@ -30,17 +32,35 @@ int strncmp(const char* p, const char* q, uint n) {
       return -1;
     }
     i++;
-  } while(p[i] != 0 && q[i] != 0 && i <= n);
+  } while(p[i] != 0 && q[i] != 0 && i < n);
   return 0;
+}
+
+extern int strcmp(const char *p, const char *q) {
+    uint i = 0;
+    do {
+      if(p[i] > q[i]) {
+        return 1;
+      } else if(p[i] < q[i]) {
+        return -1;
+      }
+      i++;
+  } while(p[i] != 0 && q[i] != 0);
+    return 0;
 }
 
 int c2Dto1D(int x, int y, int xmax) {
   return y * xmax + x;
 }
 
-void itoa(char* buffer, int n, int radix) {
+char* itoa(char* buffer, int n, int radix) {
 	int index = 0;
 	char inverted[10];
+    int neg = 0;
+    if(n < 0) {
+        n = n * -1;
+        neg = 1;
+    }
 	for(int modulator = radix ; modulator > 0 ; modulator *= radix) {
 		inverted[index] = ((n % modulator) / (modulator / radix));
 		inverted[index] = inverted[index] < 10 ? inverted[index] + 48 : inverted[index] + 87;
@@ -55,15 +75,17 @@ void itoa(char* buffer, int n, int radix) {
 	}
 
 	int currentIndex = 0;
-	if(n < 0)
+	if(neg == 1) {
 		buffer[currentIndex++] = '-';
+    }
 
     int significantValue = 0;
 	for(int i = 9 ; i >= 0 ; i--) {
-		if(inverted[i] != '0' || significantValue) {
+		if(inverted[i] != '0' || significantValue || i == 0) {
 			significantValue = 1;
 			buffer[currentIndex++] = inverted[i];
 		}
 	}
     buffer[currentIndex] = 0;
+    return buffer;
 }
