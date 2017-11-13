@@ -1,3 +1,5 @@
+#include "timer.h"
+
 void timer_init(uint32_t freq_hz) {
 
 }
@@ -13,5 +15,3 @@ uint get_ticks() {
 void sleep(uint ms) {
 
 }
-
-

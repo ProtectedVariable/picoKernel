@@ -1,8 +1,5 @@
 #include "kernel.h"
-#include <util.h>
-#include "gdt.h"
-#include <cursor.h>
-#include <display.h>
+
 #ifdef TEST
     #include "test.h"
 #endif

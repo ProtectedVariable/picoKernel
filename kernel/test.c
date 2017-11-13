@@ -1,6 +1,4 @@
 #include "test.h"
-#include <display.h>
-#include <util.h>
 
 static void testDisplay();
 static void testUtil();

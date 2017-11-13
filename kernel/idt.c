@@ -7,6 +7,9 @@ typedef struct regs_st {
 	uint32_t eip, cs, eflags, esp, ss;
 } regs_t;
 
+static idt_ptr_st idtptr;
+static idt_entry_t idt[256];
+
 // Build and return an IDT entry.
 // selector is the code segment selector to access the ISR
 // offset is the address of the ISR (for task gates, offset must be 0)
@@ -30,6 +33,12 @@ void exception_handler(regs_t *regs) {
 }
 
 void idt_init() {
-
+	idt = (idt_entry_t *) idtptr.base;
+	for(int i = 0 ; i < idtptr.limit ; i++)
+	{
+		if(i < 21)
+			idt[i] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, 0, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+		else if(i >= 32 && i <= 47)
+			idt[i] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, 0, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	}
 }
-
