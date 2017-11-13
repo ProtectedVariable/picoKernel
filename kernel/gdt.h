@@ -34,7 +34,7 @@ typedef struct gdt_ptr_st {
     uint32_t base;     // Address of the first entry
 } __attribute__((packed)) gdt_ptr_t;
 
-extern void gdt_init();
+void gdt_init();
 extern void gdt_load(gdt_ptr_t *gdt_ptr);
 
 #endif

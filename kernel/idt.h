@@ -1,6 +1,8 @@
 #ifndef _IDT_H_
 #define _IDT_H_
 
+#define IDT_ENTRY_COUNT 256;
+
 // Structure of an IDT descriptor. There are 3 types of descriptors:
 // a task-gate, an interrupt-gate, and a trap-gate.
 // See 5.11 of Intel 64 & IA32 architectures software developer's manual for more details.
@@ -24,5 +26,40 @@ typedef struct idt_ptr_st {
 } __attribute__((packed)) idt_ptr_t;
 
 extern void idt_init();
+extern void _exception_nocode();
+extern void _exception_code();
+extern void _irq_0();
+extern void _irq_1();
+extern void _irq_2();
+extern void _irq_3();
+extern void _irq_4();
+extern void _irq_5();
+extern void _irq_6();
+extern void _irq_7();
+extern void _irq_8();
+extern void _irq_9();
+extern void _irq_10();
+extern void _irq_11();
+extern void _irq_12();
+extern void _irq_13();
+extern void _irq_14();
+extern void _irq_15();
+
+// extern void (*_irq_0)();
+// extern void (*_irq_1)();
+// extern void (*_irq_2)();
+// extern void (*_irq_3)();
+// extern void (*_irq_4)();
+// extern void (*_irq_5)();
+// extern void (*_irq_6)();
+// extern void (*_irq_7)();
+// extern void (*_irq_8)();
+// extern void (*_irq_9)();
+// extern void (*_irq_10)();
+// extern void (*_irq_11)();
+// extern void (*_irq_12)();
+// extern void (*_irq_13)();
+// extern void (*_irq_14)();
+// extern void (*_irq_15)();
 
 #endif
