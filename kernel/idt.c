@@ -1,3 +1,4 @@
+#include "idt.h"
 // CPU context used when saving/restoring context from an interrupt
 typedef struct regs_st {
 	uint32_t gs, fs, es, ds;
@@ -29,7 +30,17 @@ static idt_entry_t idt_build_entry(uint16_t selector, uint32_t offset, uint8_t t
 
 // IRQ handler
 void irq_handler(regs_t *regs) {
-
+	switch(regs->number) {
+		case 0:
+			timer_handler();
+			break;
+		case 1:
+			keyboard_handler();
+			break;
+		default:
+			break;
+	}
+	pic_eoi(regs->number);
 }
 
 // Exception handler
@@ -38,6 +49,27 @@ void exception_handler(regs_t *regs) {
 }
 
 void idt_init() {
+	idt[0] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode_0, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[1] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode_1, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[2] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode_2, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[3] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode_3, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[4] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode_4, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[5] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode_5, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[6] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode_6, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[7] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode_7, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[8] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_code_8, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[9] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode_9, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[10] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_code_10, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[11] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_code_11, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[12] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_code_12, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[13] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_code_13, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[14] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_code_14, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[15] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode_15, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[16] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode_16, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[17] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_code_17, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[18] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode_18, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[19] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode_19, TYPE_INTERRUPT_GATE, DPL_KERNEL);
+	idt[20] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode_20, TYPE_INTERRUPT_GATE, DPL_KERNEL);
 	idt[32] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_irq_0, TYPE_INTERRUPT_GATE, DPL_KERNEL);
 	idt[33] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_irq_1, TYPE_INTERRUPT_GATE, DPL_KERNEL);
 	idt[34] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_irq_2, TYPE_INTERRUPT_GATE, DPL_KERNEL);
@@ -55,17 +87,14 @@ void idt_init() {
 	idt[46] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_irq_14, TYPE_INTERRUPT_GATE, DPL_KERNEL);
 	idt[47] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_irq_15, TYPE_INTERRUPT_GATE, DPL_KERNEL);
 
-	for(int i = 0 ; i < idtptr.limit ; i++)
+	for(int i = 21 ; i < IDT_ENTRY_COUNT ; i++)
 	{
-		if(i < 21)
-			idt[i] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, &_exception_nocode, TYPE_INTERRUPT_GATE, DPL_KERNEL);
-		// else if(i >= 32 && i <= 47)
-		// 	idt[i] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, 0, TYPE_INTERRUPT_GATE, DPL_KERNEL);
-		else
+		if(i < 32 || i > 47)
 			idt[i] = idt_build_entry(0, 0, 0, 0);
 	}
 
-
 	idtptr.base = (int)&idt;
-	idtptr.limit = sizeof(idt_entry_t) * IDT_ENTRY_COUNT;
+	idtptr.limit = sizeof(idt) - 1;
+
+	idt_load(&idtptr);
 }

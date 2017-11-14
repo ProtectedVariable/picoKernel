@@ -6,18 +6,44 @@ align 4         ; the code must be 4 byte aligned
 ;------------------------------------------------
 ; CPU exceptions
 
-global _exception_nocode
-_exception_nocode:
+%macro exception_nocode_call 1
+global _exception_nocode_%1
+_exception_nocode_%1:
     cli          ; disable interrupts
     push    0    ; dummy error code
-    push    xxx  ; exception number
+    push    %1  ; exception number
     jmp     exception_wrapper
+%endmacro
 
-global _exception_code
-_exception_code:
+%macro exception_code_call 1
+global _exception_code_%1
+_exception_code_%1:
     cli          ; disable interrupts
-    push    xxx  ; exception number
+    push    %1   ; exception number
     jmp     exception_wrapper
+%endmacro
+
+exception_nocode_call 0
+exception_nocode_call 1
+exception_nocode_call 2
+exception_nocode_call 3
+exception_nocode_call 4
+exception_nocode_call 5
+exception_nocode_call 6
+exception_nocode_call 7
+exception_code_call 8
+exception_nocode_call 9
+exception_code_call 10
+exception_code_call 11
+exception_code_call 12
+exception_code_call 13
+exception_code_call 14
+exception_nocode_call 15
+exception_nocode_call 16
+exception_code_call 17
+exception_nocode_call 18
+exception_nocode_call 19
+exception_nocode_call 20
 
 ;------------------------------------------------
 ; IRQ
@@ -144,3 +170,9 @@ irq_wrapper:
 	; exception_wrapper: error code and exception/irq number
     add     esp,8
     iret
+
+global idt_load
+idt_load:
+    mov     eax,[esp+4]  ; Get the pointer to the IDT, passed as a parameter.
+    lidt    [eax]        ; Load the IDT
+	ret

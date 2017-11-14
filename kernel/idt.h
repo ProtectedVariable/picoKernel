@@ -1,6 +1,11 @@
 #ifndef _IDT_H_
 #define _IDT_H_
 
+#include "x86.h"
+#include "pic.h"
+#include "keyboard.h"
+#include "timer.h"
+
 #define IDT_ENTRY_COUNT 256;
 
 // Structure of an IDT descriptor. There are 3 types of descriptors:
@@ -25,7 +30,7 @@ typedef struct idt_ptr_st {
 	uint32_t base;    // Address of the first entry
 } __attribute__((packed)) idt_ptr_t;
 
-extern void idt_init();
+void idt_init();
 extern void _exception_nocode();
 extern void _exception_code();
 extern void _irq_0();
@@ -44,6 +49,7 @@ extern void _irq_12();
 extern void _irq_13();
 extern void _irq_14();
 extern void _irq_15();
+extern void idt_load(idt_ptr_t* idtptr);
 
 // extern void (*_irq_0)();
 // extern void (*_irq_1)();
