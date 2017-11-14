@@ -1,11 +1,11 @@
 #ifndef _IDT_H_
 #define _IDT_H_
 
+#include <display.h>
 #include "x86.h"
 #include "pic.h"
 #include "keyboard.h"
 #include "timer.h"
-#include "../common/display.h"
 
 #define IDT_ENTRY_COUNT 256;
 
