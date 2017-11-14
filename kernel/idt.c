@@ -45,7 +45,75 @@ void irq_handler(regs_t *regs) {
 
 // Exception handler
 void exception_handler(regs_t *regs) {
-
+	setColor(RED);
+	switch(regs->number) {
+		case 0:
+			printf("Divide error");
+			break;
+		case 1:
+			printf("RESERVED");
+			break;
+		case 2:
+			printf("Non-maskable interrupt interrupted");
+			break;
+		case 3:
+			printf("Breakpoint");
+			break;
+		case 4:
+			printf("Overflow");
+			break;
+		case 5:
+			printf("Bound range exceeded");
+			break;
+		case 6:
+			printf("Invalid opcode");
+			break;
+		case 7:
+			printf("Math computing unit not available");
+			break;
+		case 8:
+			printf("Double error");
+			break;
+		case 9:
+			printf("Math processor segfault");
+			break;
+		case 10:
+			printf("Invalid TSS");
+			break;
+		case 11:
+			printf("Segment do not exist");
+			break;
+		case 12:
+			printf("Stack segment fault");
+			break;
+		case 13:
+			printf("General protection - segfault");
+			break;
+		case 14:
+			printf("Page fault");
+			break;
+		case 15:
+			printf("RESERVED");
+			break;
+		case 16:
+			printf("FPU error");
+			break;
+		case 17:
+			printf("Alignment check");
+			break;
+		case 18:
+			printf("Machine check");
+			break;
+		case 19:
+			printf("SIMD floating point exception");
+			break;
+		case 20:
+			printf("Virtualization exception");
+			break;
+		default:
+			break;
+	}
+	halt();
 }
 
 void idt_init() {

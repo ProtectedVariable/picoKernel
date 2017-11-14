@@ -5,6 +5,7 @@
 #include "pic.h"
 #include "keyboard.h"
 #include "timer.h"
+#include "../common/display.h"
 
 #define IDT_ENTRY_COUNT 256;
 
