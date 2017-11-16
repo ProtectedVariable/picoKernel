@@ -1,4 +1,5 @@
 #include "gdt.h"
+#define ADDRESSABLE_SPACE 0xFFFFF
 
 static gdt_entry_t gdt[3];
 
@@ -54,10 +55,10 @@ static gdt_entry_t gdt_make_data_segment(uint32_t base, uint32_t limit, uint8_t 
 // Initialize the GDT
 void gdt_init() {
 	gdt[0] = gdt_make_null_segment();
-	gdt[1] = gdt_make_code_segment(0, 0xFFFFF, DPL_KERNEL);
-	gdt[2] = gdt_make_data_segment(0, 0xFFFFF, DPL_KERNEL);
+	gdt[1] = gdt_make_code_segment(0, ADDRESSABLE_SPACE, DPL_KERNEL);
+	gdt[2] = gdt_make_data_segment(0, ADDRESSABLE_SPACE, DPL_KERNEL);
 
-	gdt_ptr.base = (uint_32_t)&gdt;
+	gdt_ptr.base = (int)&gdt;
 	gdt_ptr.limit = sizeof(gdt) - 1;
 
     // Load the GDT

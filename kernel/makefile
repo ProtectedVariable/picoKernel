@@ -1,6 +1,6 @@
 FLAGS=-fno-builtin -ffreestanding -nostdlib
 
-all: gdt_asm.o bootstrap.o kernel.o gdt.o pio.o keyboard.o pic.o timer.o idt.o idt_asm.o
+all: gdt_asm.o bootstrap.o kernel.o gdt.o pio.o keyboard.o pic.o timer.o idt.o idt_asm.o pic.o timer.o
 
 test: FLAGS += -DTEST
 test: test.o all

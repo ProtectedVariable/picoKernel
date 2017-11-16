@@ -10,6 +10,9 @@ void kernelEntry(multiboot_info_t* inf) {
         printf("Display Initialized\n");
         gdt_init();
         printf("GDT Initialized\n");
+        idt_init();
+        printf("IDT Initialized\n");
+        keyboard_init();
         printf("Memory Available: %d KB\n", inf->mem_upper);
         moveCursor(0, 24);
         printChar('>');

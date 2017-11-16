@@ -1,5 +1,8 @@
 %include "const.inc"
 
+extern exception_handler
+extern irq_handler
+
 section .text   ; start of the text (code) section
 align 4         ; the code must be 4 byte aligned
 
@@ -128,6 +131,7 @@ exception_wrapper:
 
 irq_wrapper:
     ; Save all registers
+
     push    eax
     push    ebx
     push    ecx

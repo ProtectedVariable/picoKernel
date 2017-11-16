@@ -1,5 +1,5 @@
 SUBDIRS := $(wildcard common/. kernel/.)
-OBJ_FILES := common/cursor.o common/display.o common/util.o kernel/bootstrap.o kernel/pio.o kernel/kernel.o kernel/gdt.o kernel/gdt_asm.o
+OBJ_FILES := common/cursor.o common/display.o common/util.o kernel/bootstrap.o kernel/pio.o kernel/kernel.o kernel/gdt.o kernel/gdt_asm.o kernel/idt.o kernel/keyboard.o kernel/pic.o kernel/idt_asm.o kernel/timer.o
 BUILD_DIR := picok
 GRUB_DIR := $(BUILD_DIR)/boot/grub
 BOOT_DIR := $(BUILD_DIR)/boot

@@ -7,7 +7,7 @@
 #include "keyboard.h"
 #include "timer.h"
 
-#define IDT_ENTRY_COUNT 256;
+#define IDT_ENTRY_COUNT 256
 
 // Structure of an IDT descriptor. There are 3 types of descriptors:
 // a task-gate, an interrupt-gate, and a trap-gate.
@@ -32,6 +32,7 @@ typedef struct idt_ptr_st {
 } __attribute__((packed)) idt_ptr_t;
 
 void idt_init();
+
 extern void _exception_nocode();
 extern void _exception_code();
 extern void _irq_0();
@@ -50,23 +51,29 @@ extern void _irq_12();
 extern void _irq_13();
 extern void _irq_14();
 extern void _irq_15();
-extern void idt_load(idt_ptr_t* idtptr);
 
-// extern void (*_irq_0)();
-// extern void (*_irq_1)();
-// extern void (*_irq_2)();
-// extern void (*_irq_3)();
-// extern void (*_irq_4)();
-// extern void (*_irq_5)();
-// extern void (*_irq_6)();
-// extern void (*_irq_7)();
-// extern void (*_irq_8)();
-// extern void (*_irq_9)();
-// extern void (*_irq_10)();
-// extern void (*_irq_11)();
-// extern void (*_irq_12)();
-// extern void (*_irq_13)();
-// extern void (*_irq_14)();
-// extern void (*_irq_15)();
+extern void _exception_nocode_0();
+extern void _exception_nocode_1();
+extern void _exception_nocode_2();
+extern void _exception_nocode_3();
+extern void _exception_nocode_4();
+extern void _exception_nocode_5();
+extern void _exception_nocode_6();
+extern void _exception_nocode_7();
+extern void _exception_code_8();
+extern void _exception_nocode_9();
+extern void _exception_code_10();
+extern void _exception_code_11();
+extern void _exception_code_12();
+extern void _exception_code_13();
+extern void _exception_code_14();
+extern void _exception_nocode_15();
+extern void _exception_nocode_16();
+extern void _exception_code_17();
+extern void _exception_nocode_18();
+extern void _exception_nocode_19();
+extern void _exception_nocode_20();
+
+extern void idt_load(idt_ptr_t* idtptr);
 
 #endif
