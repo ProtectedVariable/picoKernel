@@ -18,6 +18,9 @@ void kernelEntry(multiboot_info_t* inf) {
         printf("Memory Available: %d KB\n", inf->mem_upper);
         moveCursor(0, 24);
         printChar('>');
+        while(1) {
+            printChar(getc());
+        }
     #else
         gdt_init();
         test();

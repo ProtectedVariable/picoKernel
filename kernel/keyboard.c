@@ -1,16 +1,22 @@
 #include "keyboard.h"
 
+static keyboard_buffer keyboardBuffer;
+
 void keyboard_init() {
-	pression = 0;
+	//keyboardBuffer.pression = 0;
 	keyboardBuffer.readIndex = 0;
 	keyboardBuffer.writeIndex = 0;
+	keyboardBuffer.capslocked = 0;
+	keyboardBuffer.capsCount = 0;
+	//for (int i = 0; i < 4; i++)
+	//	keyboardBuffer.modifiers[i] = 0;
 	for(int i = 0 ; i < KEYBOARD_BUFFER_SIZE ; i++)
 		keyboardBuffer.buffer[i] = 0;
 }
 
-void bufferWrite(char toWrite) {
+void bufferWrite(uint8_t toWrite) {
 	if(keyboardBuffer.bufferCount >= KEYBOARD_BUFFER_SIZE) {
-		//TODO Show error
+		printf("KEYBOARD BUFFER IS FULL\n");
 		return;
 	}
 	keyboardBuffer.buffer[keyboardBuffer.writeIndex] = toWrite;
@@ -19,11 +25,11 @@ void bufferWrite(char toWrite) {
 	keyboardBuffer.writeIndex %= KEYBOARD_BUFFER_SIZE;
 }
 
-char bufferRead() {
+uint8_t bufferRead() {
 	if(keyboardBuffer.readIndex == keyboardBuffer.writeIndex)
 		return 0;
 
-	char read = keyboardBuffer.buffer[keyboardBuffer.readIndex];
+	uint8_t read = keyboardBuffer.buffer[keyboardBuffer.readIndex];
 	keyboardBuffer.readIndex++;
 	keyboardBuffer.bufferCount--;
 	keyboardBuffer.readIndex %= KEYBOARD_BUFFER_SIZE;
@@ -32,25 +38,42 @@ char bufferRead() {
 
 void keyboard_handler() {
 	if(inb(KEYBOARD_STATUS_POINTER) & 1) {
-		uint8_t scanCode = inb(KEYBOARD_DATA_POINTER);
-		if(scanCode >> 7) {
-			printf("%d\n", scanCode);
-
-			//Key released
-		} else {
-			//convert to ascii
-			printf("%d\n", scanCode);
-			//bufferWrite();
-		}
+		bufferWrite(inb(KEYBOARD_DATA_POINTER));
 	}
 }
 
 int getc() {
-	while(keyboardBuffer.bufferCount == 0) {}
-	return bufferRead();
+	int charGet = 0;
+	uint8_t scanCode = 0;
+	while(!charGet) {
+		while(keyboardBuffer.bufferCount == 0) {}
+		scanCode = bufferRead();
+		//printf("%d\n", scanCode);
+
+		if(scanCode == 58) {
+			if(keyboardBuffer.capslocked)
+				keyboardBuffer.capsCount--;
+			else
+				keyboardBuffer.capsCount++;
+			keyboardBuffer.capslocked = !keyboardBuffer.capslocked;
+		}
+		else if(scanCode == 42 || scanCode == 54)
+			keyboardBuffer.capsCount++;
+		else if(scanCode == 170 || scanCode == 182)
+			keyboardBuffer.capsCount--;
+		else if(scanCode >> 7)
+			continue;
+		else
+			charGet = 1;
+	}
+	if(keyboardBuffer.capsCount != 0)
+		return scancodes[scanCode + 128];
+	else
+		return scancodes[scanCode];
 }
 
 // Non-blocking call. Return 1 if a key is pressed
 int keypressed() {
-	return pression;
+	//return keyboardBuffer.pression;
+	return 0;
 }

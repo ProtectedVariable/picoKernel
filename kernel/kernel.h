@@ -7,7 +7,12 @@
 #include <cursor.h>
 #include <display.h>
 #include "gdt.h"
+#include "idt.h"
 #include "multiboot.h"
+#include "keyboard.h"
+#include "timer.h"
+#include "pic.h"
+#include "pio.h"
 
 /**
  * Entry point of the kernel
