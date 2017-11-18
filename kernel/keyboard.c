@@ -16,7 +16,9 @@ void keyboard_init() {
 
 void bufferWrite(uint8_t toWrite) {
 	if(keyboardBuffer.bufferCount >= KEYBOARD_BUFFER_SIZE) {
+		setColor(RED);
 		printf("KEYBOARD BUFFER IS FULL\n");
+		setColor(WHITE);
 		return;
 	}
 	keyboardBuffer.buffer[keyboardBuffer.writeIndex] = toWrite;
@@ -61,7 +63,7 @@ int getc() {
 			keyboardBuffer.capsCount++;
 		else if(scanCode == 170 || scanCode == 182)
 			keyboardBuffer.capsCount--;
-		else if(scanCode >> 7)
+		else if(scanCode >> 7 || scancodes[scanCode] == -1)
 			continue;
 		else
 			charGet = 1;
@@ -74,6 +76,5 @@ int getc() {
 
 // Non-blocking call. Return 1 if a key is pressed
 int keypressed() {
-	//return keyboardBuffer.pression;
-	return 0;
+	return keyboardBuffer.bufferCount != 0;
 }

@@ -7,6 +7,11 @@ void moveCursor(int x, int y) {
         x = 0;
         y++;
     }
+    else if(x < 0) {
+        x = FRAMBUFFER_WIDTH - 1;
+        if(y > 0)
+            y--;
+    }
     if(y > FRAMBUFFER_HEIGHT - 1) {
         scroll();
         x = 0;
@@ -28,4 +33,8 @@ void getCursorPosition(cursor_t* buffer) {
 
 void incrementCursor() {
     moveCursor(cursor.x + 1, cursor.y);
+}
+
+void decrementCursor() {
+    moveCursor(cursor.x - 1, cursor.y);
 }
