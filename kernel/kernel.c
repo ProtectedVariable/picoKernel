@@ -16,6 +16,8 @@ void kernelEntry(multiboot_info_t* inf) {
         printf("PIC Initialized\n");
         keyboard_init();
         printf("Keyboard Initialized\n");
+        timer_init(20000);
+        printf("Timer Initialized\n");
         sti();
         printf("Interruptions now active\n");
         printf("Memory Available: %d KB\n", inf->mem_upper);
