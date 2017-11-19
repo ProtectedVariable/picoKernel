@@ -35,5 +35,5 @@ uint get_ticks() {
 
 void sleep(uint ms) {
 	uint32_t end = timer.ticks + ((ms * timer.frequency) / 1000);
-	while(timer.ticks != end) {} //wait
+	while(timer.ticks < end) {} //wait
 }
