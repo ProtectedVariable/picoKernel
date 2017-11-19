@@ -14,7 +14,7 @@ static void testDisplay() {
     for (int i = 0; i < 170; i++) {
         printf("%d = %x  ", i, i);
     }
-    for (int i = 0; i < (1 << 30); i++) {}
+    sleep(5000);
     printf("Good");
     clearScreen();
     moveCursor(0, 23);
@@ -26,8 +26,8 @@ static void testDisplay() {
     setColor(RED);printString("Red");
     setColor(MAGENTA);printString("Magenta");
     setColor(BROWN);printString("Brown");
-    setColor(LIGHT_GRAY);printString("LIGHT_GRAY");
-    setColor(DARK_GRAY);printString("DARK_GRAY");
+    setColor(LIGHT_GREY);printString("LIGHT_GREY");
+    setColor(DARK_GREY);printString("DARK_GREY");
     setColor(LIGHT_BLUE);printString("LIGHT_BLUE");
     setColor(LIGHT_GREEN);printString("LIGHT_GREEN");
     setColor(LIGHT_CYAN);printString("LIGHT_CYAN");
@@ -35,14 +35,14 @@ static void testDisplay() {
     setColor(LIGHT_MAGENTA);printString("LIGHT_MAGENTA");
     setColor(YELLOW);printString("Yellow");
     setColor(WHITE);printString("White\n");
-    for (int i = 0; i < (1 << 20); i++) {}
+    sleep(2000);
     printf("Here's a loading bar\n");
     for (int i = 0; i < FRAMBUFFER_WIDTH; i++) {
         for (int j = 0; j <= i; j++) {
             printChar(0xDB);
         }
         printChar('\r');
-        for (int i = 0; i < (1 << 23); i++) {}
+        sleep(20);
     }
     setBackground(BLACK);printString("Black");
     setBackground(BLUE);printString("Blue");
@@ -51,8 +51,8 @@ static void testDisplay() {
     setBackground(RED);printString("Red");
     setBackground(MAGENTA);printString("Magenta");
     setBackground(BROWN);printString("Brown");
-    setBackground(LIGHT_GRAY);printString("LIGHT_GRAY");
-    setBackground(DARK_GRAY);printString("DARK_GRAY");
+    setBackground(LIGHT_GREY);printString("LIGHT_GREY");
+    setBackground(DARK_GREY);printString("DARK_GREY");
     setBackground(LIGHT_BLUE);printString("LIGHT_BLUE");
     setBackground(LIGHT_GREEN);printString("LIGHT_GREEN");
     setBackground(LIGHT_CYAN);printString("LIGHT_CYAN");

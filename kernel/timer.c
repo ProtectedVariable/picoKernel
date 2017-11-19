@@ -1,56 +1,39 @@
 #include "timer.h"
 
-static uint ticks;
+static timer_t timer;
+
 static uint precounter;
 static uint precounterTarget;
 
-void timer_init(uint32_t freq_mhz) {
-	if(freq_mhz > TIMER_HIGH_BOUND) {
+void timer_init(uint32_t freq_hz) {
+	if(freq_hz > TIMER_HIGH_BOUND) {
 		setColor(RED);
 		printf("\nTIMER INITLIZATION ERROR : frequency too high\n");
 		setColor(WHITE);
+	} else if(freq_hz < TIMER_LOW_BOUND) {
+		setColor(RED);
+		printf("\nTIMER INITLIZATION ERROR : frequency too low\n");
+		setColor(WHITE);
 	}
 
-	uint16_t load;
-	int test = TIMER_HIGH_BOUND;
-	for(load = 0; test > freq_mhz && load < TIMER_REGISTER_BOUND ; load++) {
-		if(load % 2)
-			test -= (FREQUENCY_STEP + 1);
-		else
-			test -= FREQUENCY_STEP;
-	}
+	uint16_t divisor = TIMER_HIGH_BOUND / freq_hz;
 
-	if(test - freq_mhz > (test + FREQUENCY_STEP) - freq_mhz && load < TIMER_REGISTER_BOUND)
-		load++;
-
-	outw(TIMER_POINTER, load);
-	precounter = 0;
-	ticks = 0;
+	timer.ticks = 0;
+	timer.frequency = freq_hz;
+	outb(TIMER_COMMAND_POINTER, 0x36);
+	outb(TIMER_CHAN0_POINTER, divisor & 0xFF); //LSB first
+	outb(TIMER_CHAN0_POINTER, divisor >> 8); //MSB
 }
 
-// void timer_init(uint32_t freq_hz) {	
-// 	if(freq_mhz > TIMER_HIGH_BOUND) {
-// 		setColor(RED);
-// 		printf("\nTIMER INITLIZATION ERROR : frequency too high\n");
-// 		setColor(WHITE);
-// 	}
-
-// 	outb(TIMER_POINTER, load);
-// 	ticks = 0;
-// 	precounter = 0;
-// }
-
 void timer_handler() {
-	ticks++;
-	setColor(GREEN);
-	printf("\n.\n", ticks);
-	setColor(WHITE);
+	timer.ticks++;
 }
 
 uint get_ticks() {
-	return ticks;
+	return timer.ticks;
 }
 
 void sleep(uint ms) {
-
+	uint32_t end = timer.ticks + ((ms * timer.frequency) / 1000);
+	while(timer.ticks != end) {} //wait
 }

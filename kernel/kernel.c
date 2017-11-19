@@ -5,21 +5,21 @@
 #endif
 
 void kernelEntry(multiboot_info_t* inf) {
+    initDisplay();
+    printf("Display Initialized\n");
+    gdt_init();
+    printf("GDT Initialized\n");
+    idt_init();
+    printf("IDT Initialized\n");
+    pic_init();
+    printf("PIC Initialized\n");
+    keyboard_init();
+    printf("Keyboard Initialized\n");
+    timer_init(1000);
+    printf("Timer Initialized\n");
+    sti();
+    printf("Interruptions now active\n");
     #ifndef TEST
-        initDisplay();
-        printf("Display Initialized\n");
-        gdt_init();
-        printf("GDT Initialized\n");
-        idt_init();
-        printf("IDT Initialized\n");
-        pic_init();
-        printf("PIC Initialized\n");
-        keyboard_init();
-        printf("Keyboard Initialized\n");
-        timer_init(20000);
-        printf("Timer Initialized\n");
-        sti();
-        printf("Interruptions now active\n");
         printf("Memory Available: %d KB\n", inf->mem_upper);
         moveCursor(0, 24);
         printChar('>');

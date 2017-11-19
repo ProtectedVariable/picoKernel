@@ -5,9 +5,17 @@
 #include <display.h>
 #include "pio.h"
 
-#define TIMER_HIGH_BOUND 1193180000
-#define TIMER_LOW_BOUND 18206
-#define TIMER_POINTER 0x43
+typedef struct timer_t {
+	uint32_t ticks;
+	uint32_t frequency;
+} timer_t;
+
+#define TIMER_HIGH_BOUND 1193180
+#define TIMER_LOW_BOUND 18
+#define TIMER_COMMAND_POINTER 0x43
+#define TIMER_CHAN0_POINTER 0x40
+#define TIMER_CHAN1_POINTER 0x41
+#define TIMER_CHAN2_POINTER 0x42
 #define TIMER_REGISTER_BOUND 65536
 #define FREQUENCY_STEP 18206
 
