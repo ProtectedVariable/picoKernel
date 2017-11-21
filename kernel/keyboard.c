@@ -3,13 +3,10 @@
 static keyboard_buffer keyboardBuffer;
 
 void keyboard_init() {
-	//keyboardBuffer.pression = 0;
 	keyboardBuffer.readIndex = 0;
 	keyboardBuffer.writeIndex = 0;
 	keyboardBuffer.capslocked = 0;
 	keyboardBuffer.capsCount = 0;
-	//for (int i = 0; i < 4; i++)
-	//	keyboardBuffer.modifiers[i] = 0;
 	for(int i = 0 ; i < KEYBOARD_BUFFER_SIZE ; i++)
 		keyboardBuffer.buffer[i] = 0;
 }
@@ -50,7 +47,6 @@ int getc() {
 	while(!charGet) {
 		while(keyboardBuffer.bufferCount == 0) {}
 		scanCode = bufferRead();
-		//printf("%d\n", scanCode);
 
 		if(scanCode == 58) {
 			if(keyboardBuffer.capslocked)
@@ -69,7 +65,7 @@ int getc() {
 			charGet = 1;
 	}
 	if(keyboardBuffer.capsCount != 0)
-		return scancodes[scanCode + 128];
+		return scancodes[scanCode + (SCANCODES_TABLE_SIZE / 2)];
 	else
 		return scancodes[scanCode];
 }

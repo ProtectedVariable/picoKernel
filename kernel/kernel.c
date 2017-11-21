@@ -4,6 +4,78 @@
     #include "test.h"
 #endif
 
+int handleDeadKeysAccents(int stored, int typedChar) {
+    int result = 0;
+    if(stored == 94) {
+        if(typedChar == 97) // a
+            result = 131 ;
+        else if(typedChar == 101) // e
+            result = 136;
+        else if(typedChar == 105) // i
+            result = 140;
+        else if(typedChar == 111) // o
+            result = 147;
+        else if(typedChar == 117) // u
+            result = 150;
+        else if(typedChar == 65) // A
+            result = 182;
+        else if(typedChar == 69) // E
+            result = 210;
+        else if(typedChar == 73) // I
+            result = 215;
+        else if(typedChar == 79) // O
+            result = 226;
+        else if(typedChar == 85) // U
+            result = 234;
+    }
+    else if(stored == 96) {
+        if(typedChar == 97) // a
+            result = 133;
+        else if(typedChar == 101) // e
+            result = 138;
+        else if(typedChar == 105) // i
+            result = 141;
+        else if(typedChar == 111) // o
+            result = 149;
+        else if(typedChar == 117) // u
+            result = 151;
+        else if(typedChar == 65) // A
+            result = 183;
+        else if(typedChar == 69) // E
+            result = 212;
+        else if(typedChar == 73) // I
+            result = 222;
+        else if(typedChar == 79) // O
+            result = 227;
+        else if(typedChar == 85) // U
+            result = 235;
+    }
+    else if(stored == 249) {
+        if(typedChar == 97) // a
+            result = 132;
+        else if(typedChar == 101) // e
+            result = 137;
+        else if(typedChar == 105) // i
+            result = 139;
+        else if(typedChar == 111) // o
+            result = 148;
+        else if(typedChar == 117) // u
+            result = 129;
+        else if(typedChar == 65) // A
+            result = 142;
+        else if(typedChar == 69) // E
+            result = 211;
+        else if(typedChar == 73) // I
+            result = 216;
+        else if(typedChar == 79) // O
+            result = 153;
+        else if(typedChar == 85) // U
+            result = 154;
+    }
+
+    return result;
+}
+
 void kernelEntry(multiboot_info_t* inf) {
     initDisplay();
     printf("Display Initialized\n");
@@ -25,8 +97,9 @@ void kernelEntry(multiboot_info_t* inf) {
         printChar('>');
 
         int stored = 0;
+        int typed = 0;
         while(1) {
-            int typed = getc();
+            typed = getc();
             if(typed == 81)
             {
                 setColor(LIGHT_GREY);
@@ -38,86 +111,20 @@ void kernelEntry(multiboot_info_t* inf) {
                 printChar('\0');
                 decrementCursor();
             }
-            else if(stored == 0 && (typed == 94 || typed == 96 || typed == 249))
+            else if(stored == 0 && (typed == 94 || typed == 96 || typed == 249)) {
                 stored = typed;
-            else {
-                if(stored == 94) {
-                    if(typed == 97) // a
-                        typed = 131 ;
-                    else if(typed == 101) // e
-                        typed = 136;
-                    else if(typed == 105) // i
-                        typed = 140;
-                    else if(typed == 111) // o
-                        typed = 147;
-                    else if(typed == 117) // u
-                        typed = 150;
-                    else if(typed == 65) // A
-                        typed = 182;
-                    else if(typed == 69) // E
-                        typed = 210;
-                    else if(typed == 73) // I
-                        typed = 215;
-                    else if(typed == 79) // O
-                        typed = 226;
-                    else if(typed == 85) // U
-                        typed = 234;
-                    else
-                        printChar(stored);
-                    stored = 0;
+                typed = getc();
+                int combined = handleDeadKeysAccents(stored, typed);
+                if(combined == 0) {
+                    printChar(stored);
+                    printChar(typed);
                 }
-                else if(stored == 96) {
-                    if(typed == 97) // a
-                        typed = 133;
-                    else if(typed == 101) // e
-                        typed = 138;
-                    else if(typed == 105) // i
-                        typed = 141;
-                    else if(typed == 111) // o
-                        typed = 149;
-                    else if(typed == 117) // u
-                        typed = 151;
-                    else if(typed == 65) // A
-                        typed = 183;
-                    else if(typed == 69) // E
-                        typed = 212;
-                    else if(typed == 73) // I
-                        typed = 222;
-                    else if(typed == 79) // O
-                        typed = 227;
-                    else if(typed == 85) // U
-                        typed = 235;
-                    else
-                        printChar(stored);
-                    stored = 0;
-                }
-                else if(stored == 249) {
-                    if(typed == 97) // a
-                        typed = 132;
-                    else if(typed == 101) // e
-                        typed = 137;
-                    else if(typed == 105) // i
-                        typed = 139;
-                    else if(typed == 111) // o
-                        typed = 148;
-                    else if(typed == 117) // u
-                        typed = 129;
-                    else if(typed == 65) // A
-                        typed = 142;
-                    else if(typed == 69) // E
-                        typed = 211;
-                    else if(typed == 73) // I
-                        typed = 216;
-                    else if(typed == 79) // O
-                        typed = 153;
-                    else if(typed == 85) // U
-                        typed = 154;
-                    else
-                        printChar(stored);
-                    stored = 0;
-                }
-                printChar(typed);
+                else
+                    printChar(combined);
+                stored = 0;
             }
+            else
+                printChar(typed);
         }
     #else
         test();

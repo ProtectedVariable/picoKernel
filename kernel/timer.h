@@ -23,23 +23,23 @@ typedef struct timer_t {
  * Initialize the timer
  * @param freq_hz the frequency at which the timer will run (in Hz)
  */
-void timer_init(uint32_t freq_hz);
+extern void timer_init(uint32_t freq_hz);
 
 /**
  * Handles a timer tick interuption
  */
-void timer_handler();
+extern void timer_handler();
 
 /**
  * Gets the number of tick of the timer
  * @return the number of ticks the timer has counted already
  */
-uint get_ticks();
+extern uint get_ticks();
 
 /**
  * Sleeps for a given amount of time
  * @param ms number of milliseconds to sleep
  */
-void sleep(uint ms);
+extern void sleep(uint ms);
 
 #endif

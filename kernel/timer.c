@@ -2,9 +2,6 @@
 
 static timer_t timer;
 
-static uint precounter;
-static uint precounterTarget;
-
 void timer_init(uint32_t freq_hz) {
 	if(freq_hz > TIMER_HIGH_BOUND) {
 		setColor(RED);

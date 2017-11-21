@@ -1,3 +1,6 @@
+/* Functions related to managing the keyboard interrupts
+ * Ibanez Thomas, Vincent Tournier
+ */
 #ifndef _KEYBOARD_H_
 #define _KEYBOARD_H_
 
@@ -6,29 +9,26 @@
 #include "x86.h"
 
 #define KEYBOARD_BUFFER_SIZE 256
+#define SCANCODES_TABLE_SIZE 256
 #define KEYBOARD_STATUS_POINTER 0x64
 #define KEYBOARD_DATA_POINTER 0x60
 
-// enum {
-// 	SHIFT,
-// 	CTRL,
-// 	ALT,
-// 	ALTGR,
-// 	FN
-// };
-
+/**
+ * Buffer to store keyboard inputs until they get treated by the kernel
+ */
 typedef struct keyboard_buffer_t {
 	uint8_t buffer[KEYBOARD_BUFFER_SIZE];
-	//int modifiers[5];
 	int writeIndex;
 	int readIndex;
 	int bufferCount;
 	int capsCount;
 	int capslocked;
-
 } keyboard_buffer;
 
-static const int scancodes[256] = {
+/** 
+ * Table de traduction des makecodes vers les caractères ASCII
+ */
+static const int scancodes[SCANCODES_TABLE_SIZE] = {
 	-1, -1, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 39, 94, 8, 9, //0 à 15
 	113, 119, 101, 114, 116, 122, 117, 105, 111, 112, 138, 249, 10, -1, 97, 115, //16 à 31
 	100, 102, 103, 104, 106, 107, 108, 130, 133, 21, -1, 36, 121, 120, 99, 118, //32 à 47
@@ -46,9 +46,9 @@ static const int scancodes[256] = {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 //240 à 255
 };
 
-void keyboard_init();
-void keyboard_handler();
-int getc();
-int keypressed();
+extern void keyboard_init();
+extern void keyboard_handler();
+extern int getc();
+extern int keypressed();
 
 #endif

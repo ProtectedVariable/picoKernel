@@ -1,3 +1,6 @@
+/* All IDT-related functions
+ * Thomas Ibanez, Vincent Tournier
+ */
 #ifndef _IDT_H_
 #define _IDT_H_
 
@@ -9,32 +12,58 @@
 
 #define IDT_ENTRY_COUNT 256
 
-// Structure of an IDT descriptor. There are 3 types of descriptors:
-// a task-gate, an interrupt-gate, and a trap-gate.
-// See 5.11 of Intel 64 & IA32 architectures software developer's manual for more details.
-// For task gates, offset must be 0.
+/** 
+ * Strcture to represent the context at the time of interrupt
+ */
+typedef struct regs_st {
+	uint32_t gs, fs, es, ds;
+	uint32_t ebp, edi, esi;
+	uint32_t edx, ecx, ebx, eax;
+	uint32_t number, error_code;
+	uint32_t eip, cs, eflags, esp, ss;
+} regs_t;
+
+/** 
+ * Structure for an IDT entry
+ */
 typedef struct idt_entry_st {
-	uint16_t offset15_0;   // only used by trap and interrupt gates
-	uint16_t selector;     // segment selector for trap and interrupt gates; TSS segment selector for task gates
+	uint16_t offset15_0;
+	uint16_t selector;
 	uint16_t reserved : 8;
 	uint16_t type : 5;
 	uint16_t dpl : 2;
 	uint16_t p : 1;
-
-	uint16_t offset31_16;  // only used by trap and interrupt gates
+	uint16_t offset31_16;
 } __attribute__((packed)) idt_entry_t;
 
-// Structure describing a pointer to the IDT gate table.
-// This format is required by the lgdt instruction.
+/** 
+ * Structure to represent the IDT table pointer
+ */
 typedef struct idt_ptr_st {
-	uint16_t limit;   // Limit of the table (ie. its size)
-	uint32_t base;    // Address of the first entry
+	uint16_t limit;
+	uint32_t base;
 } __attribute__((packed)) idt_ptr_t;
 
+/** 
+ * Function to load the IDT into the IDTR
+ */
 void idt_init();
 
-extern void _exception_nocode();
-extern void _exception_code();
+/** 
+ * Handles an IRQ
+ * @þaram regs The context and error code at the moment of the exception
+ */
+void irq_handler(regs_t *regs);
+
+/** 
+ * Handles a CPU exception
+ * @þaram regs The context and error code at the moment of the exception
+ */
+void exception_handler(regs_t *regs);
+
+/** 
+ * 16 functions to handle the 16 IRQs
+ */
 extern void _irq_0();
 extern void _irq_1();
 extern void _irq_2();
@@ -52,6 +81,9 @@ extern void _irq_13();
 extern void _irq_14();
 extern void _irq_15();
 
+/** 
+ * 16 functions to handle the 16 processor exceptions with or without an error code
+ */
 extern void _exception_nocode_0();
 extern void _exception_nocode_1();
 extern void _exception_nocode_2();
