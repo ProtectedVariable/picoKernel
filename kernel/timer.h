@@ -19,9 +19,27 @@ typedef struct timer_t {
 #define TIMER_REGISTER_BOUND 65536
 #define FREQUENCY_STEP 18206
 
+/**
+ * Initialize the timer
+ * @param freq_hz the frequency at which the timer will run (in Hz)
+ */
 void timer_init(uint32_t freq_hz);
+
+/**
+ * Handles a timer tick interuption
+ */
 void timer_handler();
+
+/**
+ * Gets the number of tick of the timer
+ * @return the number of ticks the timer has counted already
+ */
 uint get_ticks();
+
+/**
+ * Sleeps for a given amount of time
+ * @param ms number of milliseconds to sleep
+ */
 void sleep(uint ms);
 
 #endif

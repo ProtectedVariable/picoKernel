@@ -11,8 +11,8 @@ void test() {
 static void testDisplay() {
     initDisplay();
     printf("Let's count in hex !\n");
-    for (int i = 0; i < 170; i++) {
-        printf("%d = %x  ", i, i);
+    for (int i = 0; i < 130; i++) {
+        printf("%d = %x\t", i, i);
     }
     sleep(5000);
     printf("Good");

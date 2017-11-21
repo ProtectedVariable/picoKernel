@@ -15,7 +15,7 @@ void kernelEntry(multiboot_info_t* inf) {
     printf("PIC Initialized\n");
     keyboard_init();
     printf("Keyboard Initialized\n");
-    timer_init(1000);
+    timer_init(100);
     printf("Timer Initialized\n");
     sti();
     printf("Interruptions now active\n");
@@ -120,7 +120,6 @@ void kernelEntry(multiboot_info_t* inf) {
             }
         }
     #else
-        gdt_init();
         test();
     #endif
 }

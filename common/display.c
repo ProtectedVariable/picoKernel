@@ -22,10 +22,9 @@ void printChar(char c) {
         moveCursor(0, cursor.y + 1);
         return;
     } else if(c == '\t') {
-        incrementCursor();
-        incrementCursor();
-        incrementCursor();
-        incrementCursor();
+        for (int i = 0; i <= 4; i++) {
+            incrementCursor();
+        }
         return;
     } else if(c == '\r') {
         moveCursor(0, cursor.y);
