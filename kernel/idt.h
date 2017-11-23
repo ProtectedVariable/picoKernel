@@ -1,5 +1,5 @@
-/* All IDT-related functions
- * Thomas Ibanez, Vincent Tournier
+/* IDT header file
+ * Ibanez Thomas, Tournier Vincent
  */
 #ifndef _IDT_H_
 #define _IDT_H_

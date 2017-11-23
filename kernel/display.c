@@ -1,3 +1,6 @@
+/* Text-based display source file
+ * Ibanez Thomas, Tournier Vincent
+ */
 #include "display.h"
 
 static uint8_t color = 0x0F;

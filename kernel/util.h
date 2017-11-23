@@ -1,5 +1,5 @@
-/* Utility functions
- * Ibanez Thomas, Vincent Tournier
+/* Utility functions header file
+ * Ibanez Thomas, Tournier Vincent
  */
 #ifndef _UTIL_H_
 #define _UTIL_H_

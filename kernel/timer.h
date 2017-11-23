@@ -1,3 +1,6 @@
+/* Timer header file
+ * Ibanez Thomas, Tournier Vincent
+ */
 #ifndef _TIMER_H_
 #define _TIMER_H_
 

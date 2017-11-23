@@ -1,3 +1,6 @@
+/* Utility functions source file
+ * Ibanez Thomas, Tournier Vincent
+ */
 #include "util.h"
 
 #include "display.h"

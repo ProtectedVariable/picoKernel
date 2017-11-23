@@ -1,5 +1,5 @@
-/* All tests
- * Ibanez Thomas, Vincent Tournier
+/* Test header file
+ * Ibanez Thomas, Tournier Vincent
  */
 #ifndef _TEST_H_
 #define _TEST_H_

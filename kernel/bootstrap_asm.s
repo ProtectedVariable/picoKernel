@@ -1,3 +1,6 @@
+/* Grub's bootstrap assembly file
+ * Ibanez Thomas, Tournier Vincent
+ */
 global entrypoint  ; the entry point symbol defined in kernel.ld
 
 extern kernelEntry

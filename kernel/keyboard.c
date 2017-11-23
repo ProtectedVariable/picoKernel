@@ -1,3 +1,6 @@
+/* Keyboard source file
+ * Ibanez Thomas, Tournier Vincent
+ */
 #include "keyboard.h"
 
 static keyboard_buffer keyboardBuffer;

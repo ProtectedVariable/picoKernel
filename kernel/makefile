@@ -20,5 +20,7 @@ kernel.elf: kernel.ld $(OBJ_FILES)
 
 clean:
 	-rm *.o
+	-rm *.d
+	-rm *.elf
 
 -include $(DEP_FILES)

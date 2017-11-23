@@ -1,3 +1,6 @@
+/* Kernel main source file
+ * Ibanez Thomas, Tournier Vincent
+ */
 #include "kernel.h"
 
 #ifdef TEST

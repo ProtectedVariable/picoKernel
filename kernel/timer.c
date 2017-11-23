@@ -1,3 +1,6 @@
+/* Timer source file
+ * Ibanez Thomas, Tournier Vincent
+ */
 #include "timer.h"
 
 static timer_t timer;

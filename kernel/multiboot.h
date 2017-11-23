@@ -1,3 +1,6 @@
+/*
+ * Grub's multiboot file
+ */
 #ifndef _MULTIBOOT_H_
 #define _MULTIBOOT_H_
 

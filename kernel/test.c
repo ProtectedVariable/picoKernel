@@ -1,3 +1,6 @@
+/* Test source file
+ * Ibanez Thomas, Tournier Vincent
+ */
 #include "test.h"
 
 static void testDisplay();

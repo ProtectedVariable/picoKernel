@@ -1,5 +1,5 @@
-/* Functions related to managing the keyboard interrupts
- * Ibanez Thomas, Vincent Tournier
+/* Keyboard header file
+ * Ibanez Thomas, Tournier Vincent
  */
 #ifndef _KEYBOARD_H_
 #define _KEYBOARD_H_
@@ -46,9 +46,26 @@ static const int scancodes[SCANCODES_TABLE_SIZE] = {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 //240 à 255
 };
 
+/**
+ * Initialize the keyboard
+ */
 extern void keyboard_init();
+
+/**
+ * Keyboard interrupt handler
+ */
 extern void keyboard_handler();
+
+/**
+ * Gets the typed char from the keyboard
+ * @return char code of the key pressed
+ */
 extern int getc();
+
+/**
+ * Check if any key is pressed
+ * @return true if a key is pressed, false otherwise
+ */
 extern int keypressed();
 
 #endif

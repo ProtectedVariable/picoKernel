@@ -1,3 +1,6 @@
+/* Cursor handle source file
+ * Ibanez Thomas, Tournier Vincent
+ */
 #include "cursor.h"
 
 static cursor_t cursor;

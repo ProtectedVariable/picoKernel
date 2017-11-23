@@ -1,5 +1,5 @@
-/* All text-based display functions
- * Ibanez Thomas, Vincent Tournier
+/* Text-based display header file
+ * Ibanez Thomas, Tournier Vincent
  */
 #ifndef _DISPLAY_H_
 #define _DISPLAY_H_

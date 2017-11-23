@@ -1,3 +1,6 @@
+/*
+ * x86 consts and util functions
+ */
 #ifndef _X86_H_
 #define _X86_H_
 

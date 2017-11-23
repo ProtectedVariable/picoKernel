@@ -1,5 +1,5 @@
-/* All pio-related functions
- * Ibanez Thomas, Vincent Tournier
+/* PIO header file
+ * Ibanez Thomas, Tournier Vincent
  */
 #ifndef _PIO_H_
 #define _PIO_H_

@@ -1,5 +1,5 @@
-/* All cursor-related functions
- * Thomas Ibanez, Vincent Tournier
+/* Cursor handle header file
+ * Ibanez Thomas, Tournier Vincent
  */
 #ifndef _CURSOR_H_
 #define _CURSOR_H_

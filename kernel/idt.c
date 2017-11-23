@@ -1,3 +1,6 @@
+/* IDT source file
+ * Ibanez Thomas, Tournier Vincent
+ */
 #include "idt.h"
 
 static idt_ptr_t idtptr;

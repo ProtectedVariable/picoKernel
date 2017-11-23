@@ -1,3 +1,6 @@
+/* GTD Assembly file
+ * Ibanez Thomas, Tournier Vincent
+ */
 %include "const.inc"
 
 global gdt_load

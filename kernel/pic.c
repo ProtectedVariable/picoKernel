@@ -1,3 +1,6 @@
+/* PIC source file
+ * Ibanez Thomas, Tournier Vincent
+ */
 #include "pic.h"
 #define PIC1_CMD        0x20
 #define PIC1_DATA       0x21
@@ -41,4 +44,3 @@ void pic_eoi(int irq) {
 		outb(PIC2_CMD, PIC_EOI);
 	outb(PIC1_CMD, PIC_EOI);
 }
-

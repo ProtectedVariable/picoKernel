@@ -1,3 +1,6 @@
+/* GDT header file
+ * Ibanez Thomas, Tournier Vincent
+ */
 #ifndef _GDT_H_
 #define _GDT_H_
 

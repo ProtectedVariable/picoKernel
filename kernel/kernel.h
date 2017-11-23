@@ -1,5 +1,5 @@
-/* Kernel main file
- * Ibanez Thomas, Vincent Tournier
+/* Kernel main header file
+ * Ibanez Thomas, Tournier Vincent
  */
 #ifndef __KERNEL__PANIC__
 #define __KERNEL__PANIC__

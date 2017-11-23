@@ -1,3 +1,6 @@
+/* GDT source file
+ * Ibanez Thomas, Tournier Vincent
+ */
 #include "gdt.h"
 #define ADDRESSABLE_SPACE 0xFFFFF
 
