@@ -4,8 +4,8 @@
 #ifndef _TEST_H_
 #define _TEST_H_
 
-#include <display.h>
-#include <util.h>
+#include "display.h"
+#include "util.h"
 #include "timer.h"
 
 extern void test();

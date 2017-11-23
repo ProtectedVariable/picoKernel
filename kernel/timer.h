@@ -1,8 +1,8 @@
 #ifndef _TIMER_H_
 #define _TIMER_H_
 
-#include <types.h>
-#include <display.h>
+#include "../common/types.h"
+#include "display.h"
 #include "pio.h"
 
 typedef struct timer_t {

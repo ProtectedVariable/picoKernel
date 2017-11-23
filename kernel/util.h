@@ -3,7 +3,7 @@
  */
 #ifndef _UTIL_H_
 #define _UTIL_H_
-#include "types.h"
+#include "../common/types.h"
 
 #ifndef FRAMBUFFER_WIDTH
 #define FRAMBUFFER_WIDTH 80

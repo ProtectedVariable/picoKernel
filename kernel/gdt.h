@@ -1,8 +1,8 @@
 #ifndef _GDT_H_
 #define _GDT_H_
 
-#include <util.h>
-#include <types.h>
+#include "util.h"
+#include "../common/types.h"
 #include "x86.h"
 
 // Structure of a GDT descriptor. There are 2 types of descriptors: segments and TSS.

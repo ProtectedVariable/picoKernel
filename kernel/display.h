@@ -3,7 +3,7 @@
  */
 #ifndef _DISPLAY_H_
 #define _DISPLAY_H_
-#include "types.h"
+#include "../common/types.h"
 #include "cursor.h"
 
 #define BLACK 0

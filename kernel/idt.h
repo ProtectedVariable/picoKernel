@@ -4,7 +4,7 @@
 #ifndef _IDT_H_
 #define _IDT_H_
 
-#include <display.h>
+#include "display.h"
 #include "x86.h"
 #include "pic.h"
 #include "keyboard.h"
@@ -12,7 +12,7 @@
 
 #define IDT_ENTRY_COUNT 256
 
-/** 
+/**
  * Strcture to represent the context at the time of interrupt
  */
 typedef struct regs_st {
@@ -23,7 +23,7 @@ typedef struct regs_st {
 	uint32_t eip, cs, eflags, esp, ss;
 } regs_t;
 
-/** 
+/**
  * Structure for an IDT entry
  */
 typedef struct idt_entry_st {
@@ -36,7 +36,7 @@ typedef struct idt_entry_st {
 	uint16_t offset31_16;
 } __attribute__((packed)) idt_entry_t;
 
-/** 
+/**
  * Structure to represent the IDT table pointer
  */
 typedef struct idt_ptr_st {
@@ -44,24 +44,24 @@ typedef struct idt_ptr_st {
 	uint32_t base;
 } __attribute__((packed)) idt_ptr_t;
 
-/** 
+/**
  * Function to load the IDT into the IDTR
  */
 void idt_init();
 
-/** 
+/**
  * Handles an IRQ
  * @þaram regs The context and error code at the moment of the exception
  */
 void irq_handler(regs_t *regs);
 
-/** 
+/**
  * Handles a CPU exception
  * @þaram regs The context and error code at the moment of the exception
  */
 void exception_handler(regs_t *regs);
 
-/** 
+/**
  * 16 functions to handle the 16 IRQs
  */
 extern void _irq_0();
@@ -81,7 +81,7 @@ extern void _irq_13();
 extern void _irq_14();
 extern void _irq_15();
 
-/** 
+/**
  * 16 functions to handle the 16 processor exceptions with or without an error code
  */
 extern void _exception_nocode_0();

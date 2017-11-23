@@ -3,9 +3,9 @@
  */
 #ifndef __KERNEL__PANIC__
 #define __KERNEL__PANIC__
-#include <util.h>
-#include <cursor.h>
-#include <display.h>
+#include "util.h"
+#include "cursor.h"
+#include "display.h"
 #include "gdt.h"
 #include "idt.h"
 #include "multiboot.h"

@@ -1,21 +1,21 @@
-SUBDIRS := $(wildcard common/. kernel/.)
-OBJ_FILES := common/cursor.o common/display.o common/util.o kernel/bootstrap.o kernel/pio.o kernel/kernel.o kernel/gdt.o kernel/gdt_asm.o kernel/idt.o kernel/keyboard.o kernel/pic.o kernel/idt_asm.o kernel/timer.o
+SUBDIRS := $(wildcard kernel/.)
 BUILD_DIR := picok
 GRUB_DIR := $(BUILD_DIR)/boot/grub
 BOOT_DIR := $(BUILD_DIR)/boot
+TEST=
 
-all: $(BUILD_DIR) $(SUBDIRS) $(GRUB_DIR)/menu.lst $(GRUB_DIR)/stage2_eltorito $(BOOT_DIR)/kernel.elf picok.iso
+all: picok.iso
 
-test: OBJ_FILES += kernel/test.o
-test: all
+test: TEST=-DTEST
+test: run
 
 run: all
 	qemu-system-i386 -cdrom picok.iso
 
-$(BOOT_DIR)/kernel.elf: $(OBJ_FILES)
-	gcc $(OBJ_FILES) -Icommon -Tkernel/kernel.ld -m32 -fno-builtin -ffreestanding -nostdlib -o $(BOOT_DIR)/kernel.elf
+$(BOOT_DIR)/kernel.elf: kernel/kernel.elf
+	cp kernel/kernel.elf $(BOOT_DIR)/kernel.elf
 
-picok.iso: $(BOOT_DIR)/kernel.elf
+picok.iso: $(BUILD_DIR) $(SUBDIRS) $(GRUB_DIR)/menu.lst $(GRUB_DIR)/stage2_eltorito $(BOOT_DIR)/kernel.elf $(BOOT_DIR)/kernel.elf
 	genisoimage -R -b boot/grub/stage2_eltorito -input-charset utf8 -no-emul-boot -boot-info-table -o picok.iso picok
 
 $(BUILD_DIR):
@@ -25,11 +25,11 @@ $(GRUB_DIR)/%: grub/%
 	cp $< $@
 
 $(SUBDIRS):
-	$(MAKE) -C $@ $(MAKECMDGOALS)
+	$(MAKE) -C $@ TEST=$(TEST)
 
-clean: $(SUBDIRS)
+clean:
+	$(MAKE) -C $(SUBDIRS) clean
 	-rm picok.iso -f
 	-rm -r picok -f
-test: $(SUBDIRS)
 
 .PHONY: all clean test $(SUBDIRS)

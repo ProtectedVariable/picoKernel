@@ -4,8 +4,8 @@
 #ifndef _KEYBOARD_H_
 #define _KEYBOARD_H_
 
-#include <display.h>
-#include <types.h>
+#include "display.h"
+#include "../common/types.h"
 #include "x86.h"
 
 #define KEYBOARD_BUFFER_SIZE 256
@@ -25,7 +25,7 @@ typedef struct keyboard_buffer_t {
 	int capslocked;
 } keyboard_buffer;
 
-/** 
+/**
  * Table de traduction des makecodes vers les caractères ASCII
  */
 static const int scancodes[SCANCODES_TABLE_SIZE] = {
