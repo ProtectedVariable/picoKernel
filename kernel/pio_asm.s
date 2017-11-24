@@ -1,39 +1,29 @@
-/* PIO assembly file
- * Ibanez Thomas, Tournier Vincent
- */
+; PIO assembly file
+; Ibanez Thomas, Tournier Vincent
+
 global outb
 global outw
 global inb
 global inw
 
 outb:
-  enter 0, 0
-  mov WORD dx, [ebp+8]
-  mov BYTE al, [ebp+12]
+  mov WORD dx, [esp+4]
+  mov BYTE al, [esp+8]
   out dx, al
-  leave
   ret
 
 outw:
-  enter 0, 0
-  mov WORD dx, [ebp+8]
-  mov WORD ax, [ebp+12]
+  mov WORD dx, [esp+4]
+  mov WORD ax, [esp+8]
   out dx, ax
-  leave
   ret
 
 inb:
-  enter 0, 0
-  mov eax, 0
-  mov dx, WORD[ebp+8]
+  mov WORD dx, [esp+4]
   in al, dx
-  leave
   ret
 
 inw:
-  enter 0, 0
-  mov eax, 0
-  mov WORD dx, [ebp+8]
+  mov WORD dx, [esp+4]
   in ax, dx
-  leave
   ret
