@@ -68,4 +68,12 @@ extern int getc();
  */
 extern int keypressed();
 
+/**
+ * Converts a dead-key + letter into a combination
+ * @param  stored    the stored dead key
+ * @param  typedChar the typed letter
+ * @return           combination if it exists of the two params, 0 otherwise
+ */
+extern int handleDeadKeysAccents(int stored, int typedChar);
+
 #endif
