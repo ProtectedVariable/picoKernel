@@ -5,11 +5,19 @@
 
 static void testDisplay();
 static void testUtil();
+static void testExceptions();
 
 void test() {
     testDisplay();
     testUtil();
+    testExceptions();
 }
+
+static void testExceptions() {
+    printf("Now let's print 5 / 0 => ");
+    printf("%d\n", 5 / 0);
+}
+
 
 static void testDisplay() {
     initDisplay();
@@ -17,7 +25,7 @@ static void testDisplay() {
     for (int i = 0; i < 130; i++) {
         printf("%d = %x\t", i, i);
     }
-    sleep(5000);
+    sleep(4000);
     printf("Good");
     clearScreen();
     moveCursor(0, 23);
