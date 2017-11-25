@@ -134,6 +134,8 @@ int handleDeadKeysAccents(int stored, int typedChar) {
             result = 148;
         else if(typedChar == 117) // u
             result = 129;
+		else if(typedChar == 121) // y
+			result = 152;
         else if(typedChar == 65) // A
             result = 142;
         else if(typedChar == 69) // E

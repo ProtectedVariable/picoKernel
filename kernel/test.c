@@ -1,6 +1,7 @@
 /* Test source file
  * Ibanez Thomas, Tournier Vincent
  */
+#ifdef TEST
 #include "test.h"
 
 static void testDisplay();
@@ -15,7 +16,7 @@ void test() {
 
 static void testExceptions() {
     printf("Now let's print 5 / 0 => ");
-    printf("%d\n", 5 / 0);
+    printf("%d\n", 5 / 0    );
 }
 
 
@@ -105,3 +106,4 @@ static void testUtil() {
         printf("OK\n");
     }
 }
+#endif
