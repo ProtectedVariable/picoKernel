@@ -29,11 +29,11 @@ void timer_handler() {
 	timer.ticks++;
 }
 
-uint get_ticks() {
+uint32_t get_ticks() {
 	return timer.ticks;
 }
 
-void sleep(uint ms) {
+void sleep(uint32_t ms) {
 	uint32_t end = timer.ticks + ((ms * timer.frequency) / 1000);
 	while(timer.ticks != end) {} //wait
 }

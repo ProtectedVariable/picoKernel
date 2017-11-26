@@ -37,12 +37,12 @@ extern void timer_handler();
  * Gets the number of tick of the timer
  * @return the number of ticks the timer has counted already
  */
-extern uint get_ticks();
+extern uint32_t get_ticks();
 
 /**
  * Sleeps for a given amount of time
  * @param ms number of milliseconds to sleep
  */
-extern void sleep(uint ms);
+extern void sleep(uint32_t ms);
 
 #endif
