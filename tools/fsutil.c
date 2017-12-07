@@ -14,8 +14,8 @@ superblock_t readSuperblock(FILE* fp) {
 		.dataBitmapSize = bytes[17],
 		.dataBitmapOffset = (bytes[18] << 8) | bytes[19],
 		.inodeList = (bytes[20] << 8) | bytes[21],
-		.label = (char*) &bytes[22]
 	};
+	strcpy(superblock.label, (char*)&bytes[22]);
 
 	return superblock;
 }
@@ -73,4 +73,16 @@ bitmap_t getBitmapBlock(superblock_t superblock, int block, FILE* fp) {
 	bitmap_t result = (bitmap_t) {.bitmap = bytes};
 	free(bytes);
 	return result;
+}
+
+void writeSuperblock(superblock_t* sb, FILE* fp, int blockSize) {
+	fwrite(sb, sizeof(char), SUPERBLOCK_SIZE, fp);
+	//put zeros until we complete the block
+	for(int i = 0; i < (blockSize-SUPERBLOCK_SIZE); i++) {
+		fputc(0, fp);
+	}
+}
+
+void writeBitmap(bitmap_t* bm, FILE* fp, int blockSize) {
+	fwrite(bm->bitmap, sizeof(char), blockSize, fp);
 }

@@ -5,12 +5,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 #define INODE_SIZE 512
 #define SUPERBLOCK_SIZE 512
 #define FILENAME_MAXSIZE 40
 #define DIRECT_BLOCK_COUNT 113
 #define INDIRECT_BLOCK_COUNT 4
+#define SUPERBLOCK_MAGIC 0xCA11AB1E
+
+#define FS_VERSION 1
+#define INODE_BITMAP_OFFSET 1
 
 typedef struct superblock_st {
 	uint32_t magic;
@@ -22,23 +27,26 @@ typedef struct superblock_st {
 	uint8_t dataBitmapSize;
 	uint16_t dataBitmapOffset;
 	uint16_t inodeList;
-	char* label; //long enough to reach 512 bytes
-} superblock_t;
+	char label[490]; //long enough to reach 512 bytes
+}__attribute__((packed)) superblock_t;
 
 typedef struct inode_st {
 	char name[FILENAME_MAX];
 	uint32_t blocks[DIRECT_BLOCK_COUNT];
 	uint32_t indirectBlocks[INDIRECT_BLOCK_COUNT];
 	uint32_t size;
-} inode_t;
+}__attribute__((packed)) inode_t;
 
 typedef struct bitmap_st {
 	uint8_t* bitmap;
-} bitmap_t;
+}__attribute__((packed)) bitmap_t;
 
 extern superblock_t readSuperblock(FILE* fp);
 extern uint8_t* readSector(superblock_t superblock, int block, FILE* fp);
 extern inode_t* getInodeBlock(superblock_t superblock, int block, FILE* fp);
 extern bitmap_t getBitmapBlock(superblock_t superblock, int block, FILE* fp);
+
+extern void writeSuperblock(superblock_t* sb, FILE* fp, int blockSize);
+extern void writeBitmap(bitmap_t* bm, FILE* fp, int blockSize);
 
 #endif
