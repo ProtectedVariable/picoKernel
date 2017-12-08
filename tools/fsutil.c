@@ -1,33 +1,19 @@
 #include "fsutil.h"
 
-superblock_t readSuperblock(FILE* fp) {
-	uint8_t bytes[SUPERBLOCK_SIZE];
+void readSuperblock(FILE* fp, superblock_t* sb) {
 	fseek(fp, 0, SEEK_SET);
-	fread(bytes, sizeof(char), SUPERBLOCK_SIZE, fp);
-	superblock_t superblock = (superblock_t) {
-		.magic = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3],
-		.version = (bytes[4] << 24) | (bytes[5] << 16) | (bytes[6] << 8) | bytes[7],
-		.blockSize = (bytes[8] << 8) | bytes[9],
-		.inodeCount = (bytes[10] << 24) | (bytes[11] << 16) | (bytes[12] << 8) | bytes[13],
-		.inodeBitmapSize = bytes[14],
-		.inodeBitmapOffset = (bytes[15] << 8) | bytes[16],
-		.dataBitmapSize = bytes[17],
-		.dataBitmapOffset = (bytes[18] << 8) | bytes[19],
-		.inodeList = (bytes[20] << 8) | bytes[21],
-	};
-	strcpy(superblock.label, (char*)&bytes[22]);
-
-	return superblock;
+	fread(sb, SUPERBLOCK_SIZE, 1, fp);
 }
 
-uint8_t* readSector(superblock_t superblock, int block, FILE* fp) {
-	uint8_t* result = (uint8_t*) malloc(sizeof(char) * superblock.blockSize);
-	fseek(fp, block * superblock.blockSize, SEEK_SET);
-	fread(result, sizeof(uint8_t), superblock.blockSize, fp);
+uint8_t* readSector(int blocksize, int block, FILE* fp) {
+	uint8_t* result = (uint8_t*) malloc(sizeof(char) * blocksize);
+	fseek(fp, block * blocksize, SEEK_SET);
+	fread(result, sizeof(uint8_t), blocksize, fp);
 	return result;
 }
 
 inode_t* getInodeBlock(superblock_t superblock, int block, FILE* fp) {
+	/*
 	int inodeCount = superblock.blockSize / INODE_SIZE;
 	inode_t* result = (inode_t*) malloc(sizeof(inodeCount * sizeof(inode_t)));
 	uint8_t* bytes = readSector(superblock, block, fp);
@@ -66,13 +52,25 @@ inode_t* getInodeBlock(superblock_t superblock, int block, FILE* fp) {
 
 	free(bytes);
 	return result;
+	*/
+	return NULL;
 }
 
-bitmap_t getBitmapBlock(superblock_t superblock, int block, FILE* fp) {
-	uint8_t* bytes = readSector(superblock, block, fp);
-	bitmap_t result = (bitmap_t) {.bitmap = bytes};
-	free(bytes);
-	return result;
+void getBitmapBlock(int blocksize, bitmap_t* bm, int block, FILE* fp) {
+	uint8_t* bytes = readSector(blocksize, block, fp);
+	*bm = (bitmap_t) {.bitmap = bytes};
+}
+
+int getFirstUnusedID(bitmap_t* bm, int blockSize) {
+	int id = -1;
+	for (int i = 0; i < blockSize; i++) {
+		for (int j = 0; j < 8; j++) {
+			if((bm->bitmap[i] & (1 << j)) == 0) {
+				return i * 8 + j;
+			}
+		}
+	}
+	return id;
 }
 
 void writeSuperblock(superblock_t* sb, FILE* fp, int blockSize) {
@@ -83,6 +81,15 @@ void writeSuperblock(superblock_t* sb, FILE* fp, int blockSize) {
 	}
 }
 
-void writeBitmap(bitmap_t* bm, FILE* fp, int blockSize) {
+void writeInode(inode_t* inode, FILE* fp, int blockSize, int position) {
+	fseek(fp, position * blockSize, SEEK_SET);
+	fwrite(inode->name, sizeof(char), FILENAME_MAXSIZE, fp);
+	fwrite(&(inode->blocks[0]), sizeof(uint32_t), DIRECT_BLOCK_COUNT, fp);
+	fwrite(&(inode->indirectBlocks[0]), sizeof(uint32_t), INDIRECT_BLOCK_COUNT, fp);
+	fwrite(&(inode->size), sizeof(uint32_t), 1, fp);
+}
+
+void writeBitmap(bitmap_t* bm, FILE* fp, int blockSize, int position) {
+	fseek(fp, position * blockSize, SEEK_SET);
 	fwrite(bm->bitmap, sizeof(char), blockSize, fp);
 }

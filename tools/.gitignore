@@ -1,4 +1,4 @@
-fs_create
+fs_*
 *.o
 *.bin
 *.img

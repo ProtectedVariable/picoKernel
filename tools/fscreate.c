@@ -48,14 +48,14 @@ int main(int argc, char const *argv[]) {
     FILE *diskFile = fopen(outFile, "wb");
     if (diskFile != NULL) {
         writeSuperblock(&super, diskFile, bs);
-        for (int i = 0; i < inodeBMSize + dataBMSize; i++) {
+        for (uint32_t i = 0; i < inodeBMSize + dataBMSize; i++) {
             bitmap_t bm;
             bm.bitmap = (uint8_t*) calloc(bs, sizeof(uint8_t));
-            writeBitmap(&bm, diskFile, bs);
+            writeBitmap(&bm, diskFile, bs, i + INODE_BITMAP_OFFSET);
             free(bm.bitmap);
         }
         //fill the disk with zeros
-        for (int i = 0; i < ((maxFiles / inodesPerBlocks) + dataBlockSize) * bs; i++) {
+        for (uint32_t i = 0; i < ((maxFiles / inodesPerBlocks) + dataBlockSize) * bs; i++) {
         	fputc(0, diskFile);
         }
         fclose (diskFile);

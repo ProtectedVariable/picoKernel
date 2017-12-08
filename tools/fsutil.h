@@ -31,7 +31,7 @@ typedef struct superblock_st {
 }__attribute__((packed)) superblock_t;
 
 typedef struct inode_st {
-	char name[FILENAME_MAX];
+	char name[FILENAME_MAXSIZE];
 	uint32_t blocks[DIRECT_BLOCK_COUNT];
 	uint32_t indirectBlocks[INDIRECT_BLOCK_COUNT];
 	uint32_t size;
@@ -41,12 +41,15 @@ typedef struct bitmap_st {
 	uint8_t* bitmap;
 }__attribute__((packed)) bitmap_t;
 
-extern superblock_t readSuperblock(FILE* fp);
-extern uint8_t* readSector(superblock_t superblock, int block, FILE* fp);
+extern void readSuperblock(FILE* fp, superblock_t* sb);
+extern uint8_t* readSector(int blocksize, int block, FILE* fp);
 extern inode_t* getInodeBlock(superblock_t superblock, int block, FILE* fp);
-extern bitmap_t getBitmapBlock(superblock_t superblock, int block, FILE* fp);
+extern void getBitmapBlock(int blocksize, bitmap_t* bm, int block, FILE* fp);
+
+extern int getFirstUnusedID(bitmap_t* bm, int blockSize);
 
 extern void writeSuperblock(superblock_t* sb, FILE* fp, int blockSize);
-extern void writeBitmap(bitmap_t* bm, FILE* fp, int blockSize);
+extern void writeBitmap(bitmap_t* bm, FILE* fp, int blockSize, int position);
 
+extern void writeInode(inode_t* inode, FILE* fp, int blockSize, int position);
 #endif
