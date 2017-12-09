@@ -30,6 +30,7 @@ int main(int argc, char const *argv[]) {
                                 for (int b = 0; b < inode.size; b++) {
                                     if(b < DIRECT_BLOCK_COUNT) {
                                         freeBlock(sb.dataBitmapOffset, sb.blockSize, inode.blocks[b], diskFile);
+                                        sb.dataBlockUsed--;
                                     } else {
                                         if(newIndirect) {
                                             newIndirect = 0;
@@ -39,8 +40,10 @@ int main(int argc, char const *argv[]) {
                                             }
                                             iblockID = inode.indirectBlocks[indirectBlockCount];
                                             freeBlock(sb.dataBitmapOffset, sb.blockSize, iblockID, diskFile);
+                                            sb.dataBlockUsed--;
                                         }
-                                        freeBlock(sb.dataBitmapOffset, sb.blockSize, readAddress(sb.inodeList + (sb.inodeCount * INODE_SIZE / sb.blockSize) + iblockID, indirectOffset, sb.blockSize, diskFile), diskFile);
+                                        freeBlock(sb.dataBitmapOffset, sb.blockSize, readAddress(sb.inodeList + (sb.inodeMax * INODE_SIZE / sb.blockSize) + iblockID, indirectOffset, sb.blockSize, diskFile), diskFile);
+                                        sb.dataBlockUsed--;
                                         indirectOffset += sizeof(uint32_t);
                                         if(indirectOffset == sb.blockSize) {
                                             indirectOffset = 0;
@@ -50,6 +53,8 @@ int main(int argc, char const *argv[]) {
                                     }
                                 }
                                 freeBlock(sb.inodeBitmapOffset, sb.blockSize, i * sb.blockSize + j * 8 + k, diskFile);
+                                sb.inodesCount--;
+                                writeSuperblock(&sb, diskFile, sb.blockSize);
                                 return 0;
                             }
                         }

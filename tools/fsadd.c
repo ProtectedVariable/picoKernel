@@ -15,6 +15,7 @@ int main(int argc, char const *argv[]) {
             if(sb.magic == SUPERBLOCK_MAGIC) {
                 int iNodeID = 0;
                 allocBlock(sb.inodeBitmapSize, sb.inodeBitmapOffset, sb.blockSize, diskFile, &iNodeID);
+                sb.inodesCount++;
 
                 inode_t file;
                 memset(file.name, 0, FILENAME_MAXSIZE);
@@ -33,9 +34,10 @@ int main(int argc, char const *argv[]) {
                     file.size += 1;
                     int dataID = -1;
                     allocBlock(sb.dataBitmapSize, sb.dataBitmapOffset, sb.blockSize, diskFile, &dataID);
+                    sb.dataBlockUsed++;
                     if(blockID < DIRECT_BLOCK_COUNT) {
                         bitmap_t data = {.bitmap = (uint8_t*)buffer};
-                        writeBitmap(&data, diskFile, sb.blockSize, sb.inodeList + (sb.inodeCount * INODE_SIZE / sb.blockSize) + dataID);
+                        writeBitmap(&data, diskFile, sb.blockSize, sb.inodeList + (sb.inodeMax * INODE_SIZE / sb.blockSize) + dataID);
                         file.blocks[blockID] = dataID;
                         blockID++;
                     } else {
@@ -43,10 +45,11 @@ int main(int argc, char const *argv[]) {
                             newIndirect = 0;
                             file.indirectBlocks[iblockID] = dataID;
                             allocBlock(sb.dataBitmapSize, sb.dataBitmapOffset, sb.blockSize, diskFile, &dataID);
+                            sb.dataBlockUsed++;
                         }
                         bitmap_t data = {.bitmap = (uint8_t*)buffer};
-                        writeBitmap(&data, diskFile, sb.blockSize, sb.inodeList + (sb.inodeCount * INODE_SIZE / sb.blockSize) + dataID);
-                        writeAddress(sb.inodeList + (sb.inodeCount * INODE_SIZE / sb.blockSize) + file.indirectBlocks[iblockID], iOffset, sb.blockSize, dataID, diskFile);
+                        writeBitmap(&data, diskFile, sb.blockSize, sb.inodeList + (sb.inodeMax * INODE_SIZE / sb.blockSize) + dataID);
+                        writeAddress(sb.inodeList + (sb.inodeMax * INODE_SIZE / sb.blockSize) + file.indirectBlocks[iblockID], iOffset, sb.blockSize, dataID, diskFile);
                         iOffset += 4;
                         if(iOffset == sb.blockSize) {
                             newIndirect = 1;
@@ -59,6 +62,7 @@ int main(int argc, char const *argv[]) {
                         }
                     }
                 }
+                writeSuperblock(&sb, diskFile, sb.blockSize);
                 writeInode(&file, diskFile, sb.blockSize, sb.inodeList + (iNodeID * INODE_SIZE * 1.0 / sb.blockSize * 1.0));
             }
         }

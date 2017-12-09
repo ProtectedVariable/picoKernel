@@ -38,6 +38,7 @@ int getFirstUnusedID(bitmap_t* bm, int blockSize) {
 }
 
 void writeSuperblock(superblock_t* sb, FILE* fp, int blockSize) {
+	fseek(fp, 0, SEEK_SET);
 	fwrite(sb, sizeof(char), SUPERBLOCK_SIZE, fp);
 	//put zeros until we complete the block
 	for(int i = 0; i < (blockSize-SUPERBLOCK_SIZE); i++) {

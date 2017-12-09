@@ -35,12 +35,15 @@ int main(int argc, char const *argv[]) {
         .magic = SUPERBLOCK_MAGIC,
 		.version = FS_VERSION,
 		.blockSize = bs,
-		.inodeCount = maxFiles,
+		.inodeMax = maxFiles,
 		.inodeBitmapSize = inodeBMSize,
 		.inodeBitmapOffset = INODE_BITMAP_OFFSET,
 		.dataBitmapSize = dataBMSize,
 		.dataBitmapOffset = INODE_BITMAP_OFFSET + inodeBMSize,
 		.inodeList = INODE_BITMAP_OFFSET + inodeBMSize + dataBMSize,
+        .inodesCount = 0,
+        .dataBlockCount = dataBlockSize,
+        .dataBlockUsed = 0
     };
 
     strcpy(&(super.label[0]), label);

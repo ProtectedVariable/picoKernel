@@ -21,13 +21,16 @@ typedef struct superblock_st {
 	uint32_t magic;
 	uint32_t version;
 	uint16_t blockSize;
-	uint32_t inodeCount;
+	uint32_t inodeMax;
 	uint8_t inodeBitmapSize;
 	uint16_t inodeBitmapOffset;
 	uint8_t dataBitmapSize;
 	uint16_t dataBitmapOffset;
 	uint16_t inodeList;
-	char label[490]; //long enough to reach 512 bytes
+	uint32_t inodesCount;
+	uint32_t dataBlockCount;
+	uint32_t dataBlockUsed;
+	char label[478]; //long enough to reach 512 bytes
 }__attribute__((packed)) superblock_t;
 
 typedef struct inode_st {
