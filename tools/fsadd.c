@@ -2,29 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void getFreeBlockAndUse(int bitmapCount, int bitmapOffset, int blockSize, FILE* diskFile, int* id) {
-    *id = -1;
-    int bitmapPosition = 0;
-    bitmap_t bm;
-    for (size_t i = 0; i < bitmapCount; i++) {
-        getBitmapBlock(blockSize, &bm, i + bitmapOffset, diskFile);
-        *id = getFirstUnusedID(&bm, blockSize);
-        if(*id != -1) {
-            bitmapPosition = i + bitmapOffset;
-            break;
-        }
-    }
-
-    if(*id == -1) {
-        printf("Disk Full !\n");
-    }
-    bm.bitmap[*id / 8] |= (1 << (*id % 8));
-    writeBitmap(&bm, diskFile, blockSize, bitmapPosition);
-}
-
 int main(int argc, char const *argv[]) {
     if(argc < 3) {
-        printf("Usage: fs_add <file> <disk_image>\n");
+        printf("Usage: %s <file> <disk_image>\n", argv[0]);
     }
     FILE* diskFile = fopen(argv[2], "rb+");
     FILE* localFile = fopen(argv[1], "rb");
@@ -34,7 +14,7 @@ int main(int argc, char const *argv[]) {
             readSuperblock(diskFile, &sb);
             if(sb.magic == SUPERBLOCK_MAGIC) {
                 int iNodeID = 0;
-                getFreeBlockAndUse(sb.inodeBitmapSize, sb.inodeBitmapOffset, sb.blockSize, diskFile, &iNodeID);
+                allocBlock(sb.inodeBitmapSize, sb.inodeBitmapOffset, sb.blockSize, diskFile, &iNodeID);
 
                 inode_t file;
                 memset(file.name, 0, FILENAME_MAXSIZE);
@@ -52,7 +32,7 @@ int main(int argc, char const *argv[]) {
                 while ((bytesRead = fread(buffer, 1, sizeof(buffer), localFile)) > 0) {
                     file.size += 1;
                     int dataID = -1;
-                    getFreeBlockAndUse(sb.dataBitmapSize, sb.dataBitmapOffset, sb.blockSize, diskFile, &dataID);
+                    allocBlock(sb.dataBitmapSize, sb.dataBitmapOffset, sb.blockSize, diskFile, &dataID);
                     if(blockID < DIRECT_BLOCK_COUNT) {
                         bitmap_t data = {.bitmap = (uint8_t*)buffer};
                         writeBitmap(&data, diskFile, sb.blockSize, sb.inodeList + (sb.inodeCount * INODE_SIZE / sb.blockSize) + dataID);
@@ -62,7 +42,7 @@ int main(int argc, char const *argv[]) {
                         if(newIndirect) {
                             newIndirect = 0;
                             file.indirectBlocks[iblockID] = dataID;
-                            getFreeBlockAndUse(sb.dataBitmapSize, sb.dataBitmapOffset, sb.blockSize, diskFile, &dataID);
+                            allocBlock(sb.dataBitmapSize, sb.dataBitmapOffset, sb.blockSize, diskFile, &dataID);
                         }
                         bitmap_t data = {.bitmap = (uint8_t*)buffer};
                         writeBitmap(&data, diskFile, sb.blockSize, sb.inodeList + (sb.inodeCount * INODE_SIZE / sb.blockSize) + dataID);

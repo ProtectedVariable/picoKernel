@@ -47,7 +47,7 @@ typedef struct bitmap_st {
 
 extern void readSuperblock(FILE* fp, superblock_t* sb);
 extern uint8_t* readSector(int blocksize, int block, FILE* fp);
-extern inode_t* getInodeBlock(superblock_t superblock, int block, FILE* fp);
+extern void getInodeBlock(int blockSize, int blockID, int inodeList, inode_t* inode, FILE* fp) ;
 extern void getBitmapBlock(int blocksize, bitmap_t* bm, int block, FILE* fp);
 
 extern int getFirstUnusedID(bitmap_t* bm, int blockSize);
@@ -57,5 +57,8 @@ extern void writeBitmap(bitmap_t* bm, FILE* fp, int blockSize, int position);
 
 extern void writeInode(inode_t* inode, FILE* fp, int blockSize, float position);
 extern void writeAddress(int block, int offset, int blockSize, uint32_t adress, FILE* fp);
+
+extern void allocBlock(int bitmapCount, int bitmapOffset, int blockSize, FILE* diskFile, int* id);
+extern void freeBlock(int dataBitmap, int blockSize, int blockID, FILE* fp);
 
 #endif

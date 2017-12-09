@@ -5,7 +5,7 @@
 
 int main(int argc, char const *argv[]) {
     if(argc < 6) {
-        printf("Usage: fs_create <label> <block_size> <out_file> <max_files> <max_blocks>\n");
+        printf("Usage: %s <label> <block_size> <out_file> <max_files> <max_blocks>\n", argv[0]);
         return 1;
     }
     const char* label = argv[1];

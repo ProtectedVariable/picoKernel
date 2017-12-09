@@ -12,48 +12,12 @@ uint8_t* readSector(int blocksize, int block, FILE* fp) {
 	return result;
 }
 
-inode_t* getInodeBlock(superblock_t superblock, int block, FILE* fp) {
-	/*
-	int inodeCount = superblock.blockSize / INODE_SIZE;
-	inode_t* result = (inode_t*) malloc(sizeof(inodeCount * sizeof(inode_t)));
-	uint8_t* bytes = readSector(superblock, block, fp);
-	for(int i = 0 ; i < inodeCount ; i++) {
-		char filename[FILENAME_MAXSIZE];
-		uint32_t direct[DIRECT_BLOCK_COUNT];
-		uint32_t indirect[INDIRECT_BLOCK_COUNT];
-		for(int j = 0 ; j < FILENAME_MAXSIZE ; j++) {
-			filename[j] = bytes[(i * INODE_SIZE) + j];
-		}
-		for(int j = 0 ; j < DIRECT_BLOCK_COUNT ; j += 4) {
-			direct[j / 4] = (bytes[(i * INODE_SIZE) + FILENAME_MAXSIZE + j] << 24) |
-			(bytes[(i * INODE_SIZE) + FILENAME_MAXSIZE + j + 1] << 16) |
-			(bytes[(i * INODE_SIZE) + FILENAME_MAXSIZE + j + 2] << 8) |
-			bytes[(i * INODE_SIZE) + FILENAME_MAXSIZE + j + 3];
-		}
-		for(int j = 0 ; j < INDIRECT_BLOCK_COUNT ; j += 4) {
-			indirect[j / 4] = (bytes[(i * INODE_SIZE) + FILENAME_MAXSIZE + DIRECT_BLOCK_COUNT + j] << 24) |
-				(bytes[(i * INODE_SIZE) + FILENAME_MAXSIZE + DIRECT_BLOCK_COUNT + j + 1] << 16) |
-				(bytes[(i * INODE_SIZE) + FILENAME_MAXSIZE + DIRECT_BLOCK_COUNT + j + 2] << 8) |
-				bytes[(i * INODE_SIZE) + FILENAME_MAXSIZE + DIRECT_BLOCK_COUNT + j + 3];
-		}
-		result[i] = (inode_t) {
-			.name = "",
-			.size = (bytes[INODE_SIZE - 4] << 24) |
-				(bytes[INODE_SIZE - 3] << 16) |
-				(bytes[INODE_SIZE - 2] << 8) |
-				bytes[INODE_SIZE - 1],
-			.blocks = {0},
-			.indirectBlocks = {0}
-		};
-		memcpy(result[i].name, filename, sizeof(filename));
-		memcpy(result[i].blocks, direct, sizeof(direct));
-		memcpy(result[i].indirectBlocks, indirect, sizeof(indirect));
-	}
-
-	free(bytes);
-	return result;
-	*/
-	return NULL;
+void getInodeBlock(int blockSize, int blockID, int inodeList, inode_t* inode, FILE* fp) {
+	fseek(fp, inodeList * blockSize + (blockID-inodeList) * INODE_SIZE, SEEK_SET);
+	fread(inode->name, sizeof(char), FILENAME_MAXSIZE, fp);
+	fread(inode->blocks, sizeof(uint32_t), DIRECT_BLOCK_COUNT, fp);
+	fread(inode->indirectBlocks, sizeof(uint32_t), INDIRECT_BLOCK_COUNT, fp);
+	fread(&(inode->size), sizeof(uint32_t), 1, fp);
 }
 
 void getBitmapBlock(int blocksize, bitmap_t* bm, int block, FILE* fp) {
@@ -97,4 +61,34 @@ void writeBitmap(bitmap_t* bm, FILE* fp, int blockSize, int position) {
 void writeAddress(int block, int offset, int blockSize, uint32_t adress, FILE* fp) {
 	fseek(fp, block * blockSize + offset, SEEK_SET);
 	fwrite(&adress, sizeof(uint32_t), 1, fp);
+}
+
+void allocBlock(int bitmapCount, int bitmapOffset, int blockSize, FILE* diskFile, int* id) {
+    *id = -1;
+    int bitmapPosition = 0;
+    bitmap_t bm;
+    for (size_t i = 0; i < bitmapCount; i++) {
+        getBitmapBlock(blockSize, &bm, i + bitmapOffset, diskFile);
+        *id = getFirstUnusedID(&bm, blockSize);
+        if(*id != -1) {
+            bitmapPosition = i + bitmapOffset;
+            break;
+        }
+    }
+
+    if(*id == -1) {
+        printf("Disk Full !\n");
+    }
+    bm.bitmap[*id / 8] |= (1 << (*id % 8));
+    writeBitmap(&bm, diskFile, blockSize, bitmapPosition);
+}
+
+void freeBlock(int bitmap, int blockSize, int blockID, FILE* fp) {
+	int bitmapID = blockID / (blockSize * 8);
+	bitmap_t bm;
+	getBitmapBlock(blockSize, &bm, bitmapID + bitmap, fp);
+	if(bm.bitmap[(blockID - (bitmapID * blockSize)) / 8] & (1 << ((blockID - (bitmapID * blockSize)) % 8))) {
+		bm.bitmap[(blockID - (bitmapID * blockSize)) / 8] ^= (1 << ((blockID - (bitmapID * blockSize)) % 8));
+		writeBitmap(&bm, fp, blockSize, bitmap + bitmapID);
+	}
 }
