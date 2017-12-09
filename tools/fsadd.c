@@ -50,6 +50,7 @@ int main(int argc, char const *argv[]) {
                         iOffset += 4;
                         if(iOffset == sb.blockSize) {
                             newIndirect = 1;
+                            iOffset = 0;
                             iblockID++;
                             if(iblockID > 3) {
                                 printf("File is too big\n");

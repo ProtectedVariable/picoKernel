@@ -21,23 +21,32 @@ int main(int argc, char const *argv[]) {
                             getInodeBlock(sb.blockSize, sb.inodeList + i * sb.blockSize + j * 8 + k, sb.inodeList, &inode, diskFile);
                             if(strcmp(inode.name, argv[1]) == 0) {
                                 printf("Found File\n");
-                                /*
+
                                 int iblockID = 0;
                                 int newIndirect = 1;
-                                int indirectBlockCount = 0;*/
+                                int indirectBlockCount = 0;
+                                int indirectOffset = 0;
 
                                 for (int b = 0; b < inode.size; b++) {
                                     if(b < DIRECT_BLOCK_COUNT) {
                                         freeBlock(sb.dataBitmapOffset, sb.blockSize, inode.blocks[b], diskFile);
                                     } else {
-                                        /*
                                         if(newIndirect) {
-                                            iblockID = inode.indirectBlocks[indirectBlockCount];
                                             newIndirect = 0;
+                                            if(indirectBlockCount >= INDIRECT_BLOCK_COUNT) {
+                                                printf("Disk format error\n");
+                                                return 1;
+                                            }
+                                            iblockID = inode.indirectBlocks[indirectBlockCount];
                                             freeBlock(sb.dataBitmapOffset, sb.blockSize, iblockID, diskFile);
                                         }
-                                        freeBlock(int dataBitmap, int blockSize, int blockID, FILE *fp)
-                                        */
+                                        freeBlock(sb.dataBitmapOffset, sb.blockSize, readAddress(sb.inodeList + (sb.inodeCount * INODE_SIZE / sb.blockSize) + iblockID, indirectOffset, sb.blockSize, diskFile), diskFile);
+                                        indirectOffset += sizeof(uint32_t);
+                                        if(indirectOffset == sb.blockSize) {
+                                            indirectOffset = 0;
+                                            indirectBlockCount++;
+                                            newIndirect = 1;
+                                        }
                                     }
                                 }
                                 freeBlock(sb.inodeBitmapOffset, sb.blockSize, i * sb.blockSize + j * 8 + k, diskFile);

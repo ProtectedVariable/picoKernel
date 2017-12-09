@@ -83,6 +83,13 @@ void allocBlock(int bitmapCount, int bitmapOffset, int blockSize, FILE* diskFile
     writeBitmap(&bm, diskFile, blockSize, bitmapPosition);
 }
 
+uint32_t readAddress(int blockID, int offset, int blockSize, FILE* fp) {
+	fseek(fp, blockID * blockSize + offset, SEEK_SET);
+	uint32_t a;
+	fread(&a, sizeof(uint32_t), 1, fp);
+	return a;
+}
+
 void freeBlock(int bitmap, int blockSize, int blockID, FILE* fp) {
 	int bitmapID = blockID / (blockSize * 8);
 	bitmap_t bm;

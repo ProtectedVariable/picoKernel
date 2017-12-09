@@ -57,6 +57,7 @@ extern void writeBitmap(bitmap_t* bm, FILE* fp, int blockSize, int position);
 
 extern void writeInode(inode_t* inode, FILE* fp, int blockSize, float position);
 extern void writeAddress(int block, int offset, int blockSize, uint32_t adress, FILE* fp);
+uint32_t readAddress(int blockID, int offset, int blockSize, FILE* fp);
 
 extern void allocBlock(int bitmapCount, int bitmapOffset, int blockSize, FILE* diskFile, int* id);
 extern void freeBlock(int dataBitmap, int blockSize, int blockID, FILE* fp);
