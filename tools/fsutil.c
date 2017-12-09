@@ -81,7 +81,7 @@ void writeSuperblock(superblock_t* sb, FILE* fp, int blockSize) {
 	}
 }
 
-void writeInode(inode_t* inode, FILE* fp, int blockSize, int position) {
+void writeInode(inode_t* inode, FILE* fp, int blockSize, float position) {
 	fseek(fp, position * blockSize, SEEK_SET);
 	fwrite(inode->name, sizeof(char), FILENAME_MAXSIZE, fp);
 	fwrite(&(inode->blocks[0]), sizeof(uint32_t), DIRECT_BLOCK_COUNT, fp);
@@ -92,4 +92,9 @@ void writeInode(inode_t* inode, FILE* fp, int blockSize, int position) {
 void writeBitmap(bitmap_t* bm, FILE* fp, int blockSize, int position) {
 	fseek(fp, position * blockSize, SEEK_SET);
 	fwrite(bm->bitmap, sizeof(char), blockSize, fp);
+}
+
+void writeAddress(int block, int offset, int blockSize, uint32_t adress, FILE* fp) {
+	fseek(fp, block * blockSize + offset, SEEK_SET);
+	fwrite(&adress, sizeof(uint32_t), 1, fp);
 }

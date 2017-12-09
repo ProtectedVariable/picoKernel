@@ -37,6 +37,10 @@ typedef struct inode_st {
 	uint32_t size;
 }__attribute__((packed)) inode_t;
 
+typedef struct indirectBlock_st {
+	uint32_t* addresses;
+}__attribute__((packed)) indirectBlock_t;
+
 typedef struct bitmap_st {
 	uint8_t* bitmap;
 }__attribute__((packed)) bitmap_t;
@@ -51,5 +55,7 @@ extern int getFirstUnusedID(bitmap_t* bm, int blockSize);
 extern void writeSuperblock(superblock_t* sb, FILE* fp, int blockSize);
 extern void writeBitmap(bitmap_t* bm, FILE* fp, int blockSize, int position);
 
-extern void writeInode(inode_t* inode, FILE* fp, int blockSize, int position);
+extern void writeInode(inode_t* inode, FILE* fp, int blockSize, float position);
+extern void writeAddress(int block, int offset, int blockSize, uint32_t adress, FILE* fp);
+
 #endif
