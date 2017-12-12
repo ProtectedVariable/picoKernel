@@ -1,7 +1,8 @@
 #ifndef _IDE_H_
 #define _IDE_H_
 
-#include "types.h"
+#include "../common/types.h"
+#include "pio.h"
 
 #define SECTOR_SIZE 512
 
