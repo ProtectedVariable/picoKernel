@@ -16,6 +16,8 @@ void kernelEntry(multiboot_info_t* inf) {
     printf("IDT Initialized\n");
     pic_init();
     printf("PIC Initialized\n");
+	filesystem_init();
+	printf("picoFS Initialized");
     keyboard_init();
     printf("Keyboard Initialized\n");
     timer_init(100);
