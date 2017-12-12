@@ -2,6 +2,10 @@
 #define _IDE_H_
 
 #include "../common/types.h"
+<<<<<<< HEAD
+=======
+#include "pio.h"
+>>>>>>> e9e9c89319580cc1cf2d551b515c6bdd1a800275
 
 #define SECTOR_SIZE 512
 
