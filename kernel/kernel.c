@@ -16,8 +16,7 @@ void kernelEntry(multiboot_info_t* inf) {
     printf("IDT Initialized\n");
     pic_init();
     printf("PIC Initialized\n");
-	filesystem_init();
-	printf("picoFS Initialized");
+	filesystem_init(); //No printf as filesystem already introduces himself with label and version
     keyboard_init();
     printf("Keyboard Initialized\n");
     timer_init(100);
