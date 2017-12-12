@@ -8,7 +8,7 @@
  */
 
 #include "ide.h"
-#include "io.h"
+#include "pio.h"
 
 #define CMD_PORT   0x1f7
 #define DATA_PORT  0x1f0
@@ -69,4 +69,3 @@ void write_sector(int sector, void *src) {
 		data++;
 	}
 }
-

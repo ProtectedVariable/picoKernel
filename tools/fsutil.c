@@ -18,6 +18,7 @@ void getInodeBlock(int blockSize, int blockID, int inodeList, inode_t* inode, FI
 	fread(inode->blocks, sizeof(uint32_t), DIRECT_BLOCK_COUNT, fp);
 	fread(inode->indirectBlocks, sizeof(uint32_t), INDIRECT_BLOCK_COUNT, fp);
 	fread(&(inode->size), sizeof(uint32_t), 1, fp);
+	fread(&(inode->exactSize), sizeof(uint32_t), 1, fp);
 }
 
 void getBitmapBlock(int blocksize, bitmap_t* bm, int block, FILE* fp) {
@@ -52,6 +53,7 @@ void writeInode(inode_t* inode, FILE* fp, int blockSize, float position) {
 	fwrite(&(inode->blocks[0]), sizeof(uint32_t), DIRECT_BLOCK_COUNT, fp);
 	fwrite(&(inode->indirectBlocks[0]), sizeof(uint32_t), INDIRECT_BLOCK_COUNT, fp);
 	fwrite(&(inode->size), sizeof(uint32_t), 1, fp);
+	fwrite(&(inode->exactSize), sizeof(uint32_t), 1, fp);
 }
 
 void writeBitmap(bitmap_t* bm, FILE* fp, int blockSize, int position) {
@@ -68,7 +70,7 @@ void allocBlock(int bitmapCount, int bitmapOffset, int blockSize, FILE* diskFile
     *id = -1;
     int bitmapPosition = 0;
     bitmap_t bm;
-    for (size_t i = 0; i < bitmapCount; i++) {
+    for (int i = 0; i < bitmapCount; i++) {
         getBitmapBlock(blockSize, &bm, i + bitmapOffset, diskFile);
         *id = getFirstUnusedID(&bm, blockSize);
         if(*id != -1) {

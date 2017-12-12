@@ -27,7 +27,7 @@ int main(int argc, char const *argv[]) {
                                 int indirectBlockCount = 0;
                                 int indirectOffset = 0;
 
-                                for (int b = 0; b < inode.size; b++) {
+                                for (size_t b = 0; b < inode.size; b++) {
                                     if(b < DIRECT_BLOCK_COUNT) {
                                         freeBlock(sb.dataBitmapOffset, sb.blockSize, inode.blocks[b], diskFile);
                                         sb.dataBlockUsed--;

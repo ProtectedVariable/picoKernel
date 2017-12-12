@@ -23,6 +23,7 @@ int main(int argc, char const *argv[]) {
                 memset(file.blocks, 0, DIRECT_BLOCK_COUNT * sizeof(uint32_t));
                 memset(file.indirectBlocks, 0, INDIRECT_BLOCK_COUNT * sizeof(uint32_t));
                 file.size = 0;
+                file.exactSize = 0;
 
                 char buffer[sb.blockSize];
                 int bytesRead = 0;
@@ -31,6 +32,7 @@ int main(int argc, char const *argv[]) {
                 int newIndirect = 1;
                 int iOffset = 0;
                 while ((bytesRead = fread(buffer, 1, sizeof(buffer), localFile)) > 0) {
+                    file.exactSize += bytesRead;
                     file.size += 1;
                     int dataID = -1;
                     allocBlock(sb.dataBitmapSize, sb.dataBitmapOffset, sb.blockSize, diskFile, &dataID);
