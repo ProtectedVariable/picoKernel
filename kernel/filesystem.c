@@ -1,10 +1,9 @@
 #include "filesystem.h"
 
+static superblock_t superblock;
+
 void filesystem_init() {
-	uint8_t superblock[SUPERBLOCK_SIZE];
-	read_sector(0, superblock);
-	for(int i = 0 ; i < SUPERBLOCK_SIZE ; i++)
-		printf("%x\n", superblock[i]);
+	read_sector(0, &superblock);
 }
 
 //int file_stat(char *filename, stat_t *stat);

@@ -10,7 +10,12 @@ test: TEST=-DTEST
 test: run
 
 run: all
-	qemu-system-i386 -cdrom picok.iso
+	tools/fs_create picoFS 1024 fs.img 1000 4096
+	tools/fs_add makefile fs.img
+	tools/fs_add kernel/kernel.c fs.img
+	tools/fs_add .gitignore fs.img
+	tools/fs_info fs.img
+	qemu-system-i386 -cdrom picok.iso -hda fs.img
 
 $(BOOT_DIR)/kernel.elf: kernel/kernel.elf
 	cp kernel/kernel.elf $(BOOT_DIR)/kernel.elf
