@@ -17,7 +17,6 @@ void getInodeBlock(int blockSize, int blockID, int inodeList, inode_t* inode, FI
 	fread(inode->name, sizeof(char), FILENAME_MAXSIZE, fp);
 	fread(inode->blocks, sizeof(uint32_t), DIRECT_BLOCK_COUNT, fp);
 	fread(inode->indirectBlocks, sizeof(uint32_t), INDIRECT_BLOCK_COUNT, fp);
-	fread(&(inode->size), sizeof(uint32_t), 1, fp);
 	fread(&(inode->exactSize), sizeof(uint32_t), 1, fp);
 }
 
@@ -52,7 +51,6 @@ void writeInode(inode_t* inode, FILE* fp, int blockSize, float position) {
 	fwrite(inode->name, sizeof(char), FILENAME_MAXSIZE, fp);
 	fwrite(&(inode->blocks[0]), sizeof(uint32_t), DIRECT_BLOCK_COUNT, fp);
 	fwrite(&(inode->indirectBlocks[0]), sizeof(uint32_t), INDIRECT_BLOCK_COUNT, fp);
-	fwrite(&(inode->size), sizeof(uint32_t), 1, fp);
 	fwrite(&(inode->exactSize), sizeof(uint32_t), 1, fp);
 }
 

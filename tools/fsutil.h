@@ -9,7 +9,7 @@
 
 #define INODE_SIZE 512
 #define SUPERBLOCK_SIZE 512
-#define FILENAME_MAXSIZE 36
+#define FILENAME_MAXSIZE 40
 #define DIRECT_BLOCK_COUNT 113
 #define INDIRECT_BLOCK_COUNT 4
 #define SUPERBLOCK_MAGIC 0xCA11AB1E
@@ -37,7 +37,6 @@ typedef struct inode_st {
 	char name[FILENAME_MAXSIZE];
 	uint32_t blocks[DIRECT_BLOCK_COUNT];
 	uint32_t indirectBlocks[INDIRECT_BLOCK_COUNT];
-	uint32_t size;
 	uint32_t exactSize;
 }__attribute__((packed)) inode_t;
 
