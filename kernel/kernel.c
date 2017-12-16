@@ -40,10 +40,26 @@ void kernelEntry(multiboot_info_t* inf) {
         printf("EXIST : %d\n", file_exists("makefile"));
         printf("WRONG EXIST : %d\n", file_exists("your_mom.enormous"));
 
-        printf("SEEK : %d\n", file_seek(fd, 96));
+        //printf("SEEK : %d\n", file_seek(fd, 96));
         printf("WRONG SEEK : %d\n", file_seek(fd, 322454245));
 
+        char buffer[1000];
+        printf("CUL : %d\n", file_read(fd, &buffer, 100));
+        printf("READ CUL : %s\n", buffer);
+
+        //while(file_read(fd, &buffer, 100) > 0)
+        //    printChar(buffer);
+
         file_close(fd);
+
+        file_iterator_t iterator = file_iterator();
+        while(file_has_next(&iterator)) {
+            char filename[FILENAME_MAXSIZE];
+            file_next(filename, &iterator);
+            printf("ITERATING : %s\n", filename);
+        }
+        if(iterator.state == FINISHED)
+            printf("ALL WENT WELL\n");
 
         printChar('>');
         int stored = 0;

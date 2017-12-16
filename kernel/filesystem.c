@@ -27,6 +27,16 @@ static int getInodeFromFilename(char *filename, inode_t* inode) {
 	return -1;
 }
 
+static int iterateToNextInode(file_iterator_t *it) {
+	for(uint i = it->currentInodeIndex + 1 ; i < superblock.inodeMax ; i++) {
+		uint byteIndex = i / 8;
+		uint bitIndex = i % 8;
+		if((inodeBitmap.bitmap[byteIndex] & (1 << bitIndex)) != 0)
+			return i;
+	}
+	return -1;
+}
+
 static void read_block(uint offset, uint8_t* dest) {
 	uint8_t read[SECTOR_SIZE];
 	int sectorByBlock = superblock.blockSize / SECTOR_SIZE;
@@ -85,11 +95,16 @@ int file_open(char *filename) {
 	if(getInodeFromFilename(filename, &inode) == -1)
 		return -1;
 
+	for(int i = 0 ; i < 6 ; i++)
+		printf("INODE : %d\n", inode.blocks[i]);
+	printf("INODE N : %s\n", inode.name);
+	printf("INODE S : %d\n", inode.size);
+
 	for(int i = 0 ; i < FILE_DESCRIPTORS_COUNT ; i++) {
 		if(fileDescriptorTable[i].state == CLOSED) {
 			fileDescriptorTable[i].state = OPENED;
 			fileDescriptorTable[i].currentByte = 0;
-			memcpy(&(fileDescriptorTable[i].inode), &inode, sizeof(inode_t));
+			memcpy(&(fileDescriptorTable[i].inode), &inode, SECTOR_SIZE);
 			return i;
 		}
 	}
@@ -97,7 +112,58 @@ int file_open(char *filename) {
 	return -1;
 }
 
-// int file_read(int fd, void *buf, uint count);
+int file_read(int fd, void *buf, uint count) {
+	if(!isFDValid(fd) | (count <= 0))
+		return -1;
+
+	file_descriptor_t descriptor = fileDescriptorTable[fd];
+	if(descriptor.currentByte >= descriptor.inode.size)
+		return 0;
+	if(descriptor.currentByte + count > descriptor.inode.size)
+		count -= (descriptor.currentByte + count) - descriptor.inode.size;
+
+	/*int blockCount = descriptor.inode.size / superblock.blockSize;
+	if(descriptor.inode.size % superblock.blockSize != 0)
+		blockCount++;*/
+
+	int startBlock = descriptor.currentByte / superblock.blockSize;
+	int endBlock = (descriptor.currentByte + count) / superblock.blockSize;
+
+	int byteCount = 0;
+
+	for(int i = startBlock ; i <= endBlock ; i++) {
+		uint8_t block[superblock.blockSize * SECTOR_SIZE];
+		if(i < DIRECT_BLOCK_COUNT)
+			read_block(descriptor.inode.blocks[i], block);
+		for(int j = 0 ; j < 6; j++)
+			printf("LOL : %d\n", descriptor.inode.blocks[j]);
+
+		if(i == startBlock && (descriptor.currentByte % superblock.blockSize) + count < superblock.blockSize) {
+			memcpy(buf + byteCount, &(block[descriptor.currentByte % superblock.blockSize]), count);
+			byteCount += count;
+			descriptor.currentByte += count;
+		}
+		else if(i == startBlock) {
+			memcpy(buf + byteCount, 
+				&(block[descriptor.currentByte % superblock.blockSize]), 
+				superblock.blockSize - (descriptor.currentByte % superblock.blockSize));
+			byteCount += superblock.blockSize - (descriptor.currentByte % superblock.blockSize);
+			descriptor.currentByte += superblock.blockSize - (descriptor.currentByte % superblock.blockSize);
+		}
+		else if(i == endBlock) {
+			memcpy(buf + byteCount, block, count - byteCount);
+			byteCount += count;
+			descriptor.currentByte += count;
+		}
+		else {
+			memcpy(buf + byteCount, block, superblock.blockSize * SECTOR_SIZE);
+			byteCount += superblock.blockSize * SECTOR_SIZE;
+			descriptor.currentByte += superblock.blockSize * SECTOR_SIZE;
+		}
+	}
+
+	return byteCount;
+}
 
 int file_seek(int fd, uint offset) {
 	if(!isFDValid(fd) || offset >= fileDescriptorTable[fd].inode.size)
@@ -112,6 +178,53 @@ void file_close(int fd) {
 	fileDescriptorTable[fd].state = CLOSED;
 }
 
-// file_iterator_t file_iterator();
-// bool file_has_next(file_iterator_t *it);
-// void file_next(char *filename, file_iterator_t *it);
+file_iterator_t file_iterator() {
+	file_iterator_t result;
+	result.currentInodeIndex = 0;
+	result.nextInode = -1;
+	result.state = CREATED;
+
+	return result;
+}
+
+bool file_has_next(file_iterator_t *it) {
+	if(it->state == FINISHED)
+		return false;
+
+	if(it->state == CREATED && (inodeBitmap.bitmap[0] & 1) != 0) {
+		it->nextInode = 0;
+		return true;
+	}
+
+	int nextInodeIndex = iterateToNextInode(it);
+	if(nextInodeIndex != -1) {
+		it->nextInode = nextInodeIndex;
+		return true;
+	}
+
+	it->state = FINISHED;
+	return false;
+}
+
+void file_next(char *filename, file_iterator_t *it) {
+	if(it->state == FINISHED)
+		return;
+	else if(it->nextInode < 0) {
+		int nextInode = iterateToNextInode(it);
+		if(nextInode == -1) {
+			it->state = FINISHED;
+			return;
+		}
+		
+		it->nextInode = nextInode;
+	}
+
+	if(it->state == CREATED)
+		it->state = ITERATING;
+
+	inode_t inode;
+	getInode(it->nextInode, &inode);
+	it->currentInodeIndex = it->nextInode;
+	it->nextInode = -1;
+	memcpy(filename, &(inode.name), FILENAME_MAXSIZE);
+}
