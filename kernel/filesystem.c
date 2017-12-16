@@ -10,7 +10,7 @@ inline static void getInode(int inodeNum, inode_t* inode) {
 }
 
 inline static bool isFDValid(int fd) {
-	return !(fd < 0 || fd > FILE_DESCRIPTORS_COUNT || fileDescriptorTable[i].state == CLOSED)
+	return !(fd < 0 || fd > FILE_DESCRIPTORS_COUNT || fileDescriptorTable[fd].state == CLOSED);
 }
 
 static int getInodeFromFilename(char *filename, inode_t* inode) {
@@ -100,7 +100,7 @@ int file_open(char *filename) {
 // int file_read(int fd, void *buf, uint count);
 
 int file_seek(int fd, uint offset) {
-	if(!isFDValid(fd) || offset >= fileDescriptorTable[i].inode.size)
+	if(!isFDValid(fd) || offset >= fileDescriptorTable[fd].inode.size)
 		return -1;
 	fileDescriptorTable[fd].currentByte = offset;
 	return fileDescriptorTable[fd].currentByte;
@@ -108,7 +108,7 @@ int file_seek(int fd, uint offset) {
 
 void file_close(int fd) {
 	if(!isFDValid(fd))
-		return -1;
+		return;
 	fileDescriptorTable[fd].state = CLOSED;
 }
 

@@ -33,9 +33,17 @@ void kernelEntry(multiboot_info_t* inf) {
         else
             printf("'%s' file size : %d bytes\n", stat.name, stat.size);
 
-        printf("OPEN : %d\n", file_open("makefile"));
+        int fd = file_open("makefile");
+        printf("OPEN : %d\n", fd);
+        printf("WRONG OPEN : %d\n", file_open("your_mom.enormous"));
 
+        printf("EXIST : %d\n", file_exists("makefile"));
+        printf("WRONG EXIST : %d\n", file_exists("your_mom.enormous"));
 
+        printf("SEEK : %d\n", file_seek(fd, 96));
+        printf("WRONG SEEK : %d\n", file_seek(fd, 322454245));
+
+        file_close(fd);
 
         printChar('>');
         int stored = 0;
