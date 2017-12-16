@@ -13,6 +13,7 @@
 #include "timer.h"
 #include "pic.h"
 #include "pio.h"
+#include "filesystem.h"
 
 /**
  * Entry point of the kernel

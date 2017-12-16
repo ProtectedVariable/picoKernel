@@ -26,8 +26,18 @@ void kernelEntry(multiboot_info_t* inf) {
     #ifndef TEST
         printf("Memory Available: %d KB\n", inf->mem_upper);
         moveCursor(0, 24);
-        printChar('>');
 
+        stat_t stat;
+        if(file_stat("kernel/kernel.c", &stat) == -1)
+            printf("Failed to find file\n");
+        else
+            printf("'%s' file size : %d bytes\n", stat.name, stat.size);
+
+        printf("OPEN : %d\n", file_open("makefile"));
+
+
+
+        printChar('>');
         int stored = 0;
         int typed = 0;
         while(1) {

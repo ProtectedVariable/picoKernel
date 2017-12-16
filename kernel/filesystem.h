@@ -13,6 +13,7 @@
 #define DIRECT_BLOCK_COUNT 113
 #define INDIRECT_BLOCK_COUNT 4
 #define SUPERBLOCK_MAGIC 0xCA11AB1E
+#define FILE_DESCRIPTORS_COUNT 256
 
 typedef struct superblock_st {
 	uint32_t magic;
@@ -55,14 +56,20 @@ typedef struct file_iterator_st {
 	uint size;
 } file_iterator_t;
 
+typedef enum file_state_st {
+	OPENED,
+	CLOSED
+} file_stat_t;
+
+typedef struct file_descriptor_st {
+	uint32_t currentByte;
+	file_stat_t state;
+	inode_t inode;
+} file_descriptor_t;
+
 extern void filesystem_init();
 extern int file_stat(char *filename, stat_t *stat);
-// Renvoie dans stat les méta-informations liées au fichier passé en argument.
-// La structure stat_t doit contenir au minimum le champ size qui est la taille du fichier.
-// Retourne 0 en cas de succès et -1 en cas d'échec.
-
 extern bool file_exists(char *filename);
-// Renvoie true si le fichier passé en argument existe.
 
 extern int file_open(char *filename);
 // Ouvre un fichier et renvoie un descripteur de fichier pour y accéder ou -1 en cas d'échec.
