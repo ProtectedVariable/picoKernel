@@ -25,38 +25,16 @@ void kernelEntry(multiboot_info_t* inf) {
     printf("Interruptions now active\n");
     #ifndef TEST
         printf("Memory Available: %d KB\n", inf->mem_upper);
+        sleep(2000);
 
-        //THIS PART NEEDS TO BE TAKEN OFF AFTER THOMAS HAS ACKNOWLEDGED HOW FUCKING CASH IT IS
-        printf("Available files :\n");
-
-        file_iterator_t iterator = file_iterator();
-        while(file_has_next(&iterator)) {
-            char filename[FILENAME_MAXSIZE];
-            file_next(filename, &iterator);
-            printf("- %s\n", filename);
-        }
-        if(iterator.state == FINISHED)
-            printf("----------\n");
-
-        int fd = file_open(".gitignore");
-        printf("OPEN .gitignore : OPENED TO FD #%d\n", fd);
-        printf("EXIST makefile : %d\n", file_exists("makefile"));
-        printf("EXIST yourmom.enormous : %d\n", file_exists("yourmom.enormous"));
-        printf("SEEK .gitignore, 23 bytes : %d\n", file_seek(fd, 23));
-
-        stat_t stat;
-        if(file_stat(".gitignore", &stat) == -1)
-            printf("Failed to find file\n");
-        else
-            printf("Stat for '%s' file size : %d bytes. CONTENT : \n", stat.name, stat.size);
-
-        char buffer = 0;
-        while(file_read(fd, &buffer, 1) > 0)
-            printChar(buffer);
-        printf("\n");
-
+        int fd = file_open("splashscreen");
+        if(fd < 0)
+            printf("LOL\n");
+        char splashBuf = 0;
+        printf("%d\n", file_read(fd, &splashBuf, 1));
+        while(file_read(fd, &splashBuf, 1) > 0)
+            printChar(splashBuf);
         file_close(fd);
-        //END OF FUCKING CASH PART
 
         moveCursor(0, 24);
         printChar('>');

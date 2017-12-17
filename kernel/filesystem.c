@@ -9,8 +9,8 @@ inline static void getInode(int inodeNum, inode_t* inode) {
 	read_sector((superblock.inodeList * (superblock.blockSize / SECTOR_SIZE)) + inodeNum, inode);
 }
 
-inline static bool isFDValid(int fd) {
-	return !(fd < 0 || fd > FILE_DESCRIPTORS_COUNT || fileDescriptorTable[fd].state == CLOSED);
+inline static bool isFDWrong(int fd) {
+	return fd < 0 || fd > FILE_DESCRIPTORS_COUNT || fileDescriptorTable[fd].state == CLOSED;
 }
 
 static int getInodeFromFilename(char *filename, inode_t* inode) {
@@ -62,15 +62,6 @@ void filesystem_init() {
 	}
 	inodeBitmap.bitmap = bitmap_bytes;
 
-	//for(int i = 0 ; i < 1024 / 8 ; i++)
-	//	printf("%d\t", inodeBitmap.bitmap[i]);
-
-	//uint8_t data_bytes[superblock.dataBitmapSize * superblock.blockSize];
-	//for(int i = 0 ; i < superblock.dataBitmapSize ; i++) {
-	//	read_block(superblock.dataBitmapOffset + i, &(data_bytes[i * superblock.blockSize]));
-	//}
-	//dataBitmap.bitmap = data_bytes;
-
 	for(int i = 0 ; i < FILE_DESCRIPTORS_COUNT ; i++) {
 		fileDescriptorTable[i].currentByte = 0;
 		fileDescriptorTable[i].state = CLOSED;
@@ -111,7 +102,7 @@ int file_open(char *filename) {
 }
 
 int file_read(int fd, void *buf, uint count) {
-	if(!isFDValid(fd) | (count <= 0))
+	if(isFDWrong(fd) || count <= 0)
 		return -1;
 
 	file_descriptor_t* descriptor = &(fileDescriptorTable[fd]);
@@ -169,14 +160,14 @@ int file_read(int fd, void *buf, uint count) {
 }
 
 int file_seek(int fd, uint offset) {
-	if(!isFDValid(fd) || offset >= fileDescriptorTable[fd].inode.size)
+	if(isFDWrong(fd) || offset >= fileDescriptorTable[fd].inode.size)
 		return -1;
 	fileDescriptorTable[fd].currentByte = offset;
 	return fileDescriptorTable[fd].currentByte;
 }
 
 void file_close(int fd) {
-	if(!isFDValid(fd))
+	if(isFDWrong(fd))
 		return;
 	fileDescriptorTable[fd].state = CLOSED;
 }

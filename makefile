@@ -11,6 +11,7 @@ test: run
 
 run: all
 	tools/fs_create picoFS 1024 fs.img 1000 4096
+	tools/fs_add splashscreen fs.img
 	tools/fs_add makefile fs.img
 	tools/fs_add kernel/kernel.c fs.img
 	tools/fs_add .gitignore fs.img
