@@ -2,7 +2,7 @@
 
 static superblock_t superblock;
 static bitmap_t inodeBitmap;
-static bitmap_t dataBitmap;
+//static bitmap_t dataBitmap;
 static file_descriptor_t fileDescriptorTable[FILE_DESCRIPTORS_COUNT];
 
 inline static void getInode(int inodeNum, inode_t* inode) {
@@ -62,11 +62,14 @@ void filesystem_init() {
 	}
 	inodeBitmap.bitmap = bitmap_bytes;
 
-	uint8_t data_bytes[superblock.dataBitmapSize * superblock.blockSize];
-	for(int i = 0 ; i < superblock.dataBitmapSize ; i++) {
-		read_block(superblock.dataBitmapOffset + i, &(data_bytes[i * superblock.blockSize]));
-	}
-	dataBitmap.bitmap = data_bytes;
+	//for(int i = 0 ; i < 1024 / 8 ; i++)
+	//	printf("%d\t", inodeBitmap.bitmap[i]);
+
+	//uint8_t data_bytes[superblock.dataBitmapSize * superblock.blockSize];
+	//for(int i = 0 ; i < superblock.dataBitmapSize ; i++) {
+	//	read_block(superblock.dataBitmapOffset + i, &(data_bytes[i * superblock.blockSize]));
+	//}
+	//dataBitmap.bitmap = data_bytes;
 
 	for(int i = 0 ; i < FILE_DESCRIPTORS_COUNT ; i++) {
 		fileDescriptorTable[i].currentByte = 0;
@@ -95,11 +98,6 @@ int file_open(char *filename) {
 	if(getInodeFromFilename(filename, &inode) == -1)
 		return -1;
 
-	for(int i = 0 ; i < 6 ; i++)
-		printf("INODE : %d\n", inode.blocks[i]);
-	printf("INODE N : %s\n", inode.name);
-	printf("INODE S : %d\n", inode.size);
-
 	for(int i = 0 ; i < FILE_DESCRIPTORS_COUNT ; i++) {
 		if(fileDescriptorTable[i].state == CLOSED) {
 			fileDescriptorTable[i].state = OPENED;
@@ -116,49 +114,54 @@ int file_read(int fd, void *buf, uint count) {
 	if(!isFDValid(fd) | (count <= 0))
 		return -1;
 
-	file_descriptor_t descriptor = fileDescriptorTable[fd];
-	if(descriptor.currentByte >= descriptor.inode.size)
+	file_descriptor_t* descriptor = &(fileDescriptorTable[fd]);
+
+	if(descriptor->currentByte >= descriptor->inode.size)
 		return 0;
-	if(descriptor.currentByte + count > descriptor.inode.size)
-		count -= (descriptor.currentByte + count) - descriptor.inode.size;
+	if(descriptor->currentByte + count > descriptor->inode.size)
+		count -= (descriptor->currentByte + count) - descriptor->inode.size;
 
-	/*int blockCount = descriptor.inode.size / superblock.blockSize;
-	if(descriptor.inode.size % superblock.blockSize != 0)
-		blockCount++;*/
-
-	int startBlock = descriptor.currentByte / superblock.blockSize;
-	int endBlock = (descriptor.currentByte + count) / superblock.blockSize;
+	uint startBlock = descriptor->currentByte / superblock.blockSize;
+	uint endBlock = (descriptor->currentByte + count) / superblock.blockSize;
 
 	int byteCount = 0;
 
-	for(int i = startBlock ; i <= endBlock ; i++) {
-		uint8_t block[superblock.blockSize * SECTOR_SIZE];
+	for(uint i = startBlock ; i <= endBlock ; i++) {
+		uint8_t block[superblock.blockSize];
 		if(i < DIRECT_BLOCK_COUNT)
-			read_block(descriptor.inode.blocks[i], block);
-		for(int j = 0 ; j < 6; j++)
-			printf("LOL : %d\n", descriptor.inode.blocks[j]);
+			read_block(superblock.dataBlockOffset + descriptor->inode.blocks[i], block);
+		else if(i < DIRECT_BLOCK_COUNT + (INDIRECT_BLOCK_COUNT * (superblock.blockSize / sizeof(indirectBlock_t)))) {
+			indirectBlock_t indirectBlock;
+			int indirectBlockIndex = (i - DIRECT_BLOCK_COUNT) / (superblock.blockSize / sizeof(indirectBlock_t));
+			read_block(superblock.dataBlockOffset + descriptor->inode.indirectBlocks[indirectBlockIndex], (uint8_t*) &indirectBlock);
 
-		if(i == startBlock && (descriptor.currentByte % superblock.blockSize) + count < superblock.blockSize) {
-			memcpy(buf + byteCount, &(block[descriptor.currentByte % superblock.blockSize]), count);
+			int positionInBlock = (i - DIRECT_BLOCK_COUNT) % (superblock.blockSize / sizeof(indirectBlock_t));
+			read_block(superblock.dataBlockOffset + indirectBlock.addresses[positionInBlock], block);
+		}
+		else
+			return -1;
+
+		if(i == startBlock && (descriptor->currentByte % superblock.blockSize) + count < superblock.blockSize) {
+			memcpy(buf + byteCount, &(block[descriptor->currentByte % superblock.blockSize]), count);
 			byteCount += count;
-			descriptor.currentByte += count;
+			descriptor->currentByte += count;
 		}
 		else if(i == startBlock) {
 			memcpy(buf + byteCount, 
-				&(block[descriptor.currentByte % superblock.blockSize]), 
-				superblock.blockSize - (descriptor.currentByte % superblock.blockSize));
-			byteCount += superblock.blockSize - (descriptor.currentByte % superblock.blockSize);
-			descriptor.currentByte += superblock.blockSize - (descriptor.currentByte % superblock.blockSize);
+				&(block[descriptor->currentByte % superblock.blockSize]), 
+				superblock.blockSize - (descriptor->currentByte % superblock.blockSize));
+			byteCount += superblock.blockSize - (descriptor->currentByte % superblock.blockSize);
+			descriptor->currentByte += superblock.blockSize - (descriptor->currentByte % superblock.blockSize);
 		}
 		else if(i == endBlock) {
 			memcpy(buf + byteCount, block, count - byteCount);
 			byteCount += count;
-			descriptor.currentByte += count;
+			descriptor->currentByte += count;
 		}
 		else {
 			memcpy(buf + byteCount, block, superblock.blockSize * SECTOR_SIZE);
 			byteCount += superblock.blockSize * SECTOR_SIZE;
-			descriptor.currentByte += superblock.blockSize * SECTOR_SIZE;
+			descriptor->currentByte += superblock.blockSize * SECTOR_SIZE;
 		}
 	}
 
@@ -191,7 +194,7 @@ bool file_has_next(file_iterator_t *it) {
 	if(it->state == FINISHED)
 		return false;
 
-	if(it->state == CREATED && (inodeBitmap.bitmap[0] & 1) != 0) {
+	if(it->state == CREATED && (inodeBitmap.bitmap[0] & 0x1) != 0) {
 		it->nextInode = 0;
 		return true;
 	}

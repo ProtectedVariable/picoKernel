@@ -42,6 +42,7 @@ int main(int argc, char const *argv[]) {
 		.dataBitmapOffset = INODE_BITMAP_OFFSET + inodeBMSize,
 		.inodeList = INODE_BITMAP_OFFSET + inodeBMSize + dataBMSize,
         .inodesCount = 0,
+        .dataBlockOffset = INODE_BITMAP_OFFSET + inodeBMSize + dataBMSize + (maxFiles / (bs / INODE_SIZE)),
         .dataBlockCount = dataBlockSize,
         .dataBlockUsed = 0
     };

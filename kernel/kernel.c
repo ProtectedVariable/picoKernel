@@ -25,42 +25,40 @@ void kernelEntry(multiboot_info_t* inf) {
     printf("Interruptions now active\n");
     #ifndef TEST
         printf("Memory Available: %d KB\n", inf->mem_upper);
-        moveCursor(0, 24);
 
-        stat_t stat;
-        if(file_stat("kernel/kernel.c", &stat) == -1)
-            printf("Failed to find file\n");
-        else
-            printf("'%s' file size : %d bytes\n", stat.name, stat.size);
-
-        int fd = file_open("makefile");
-        printf("OPEN : %d\n", fd);
-        printf("WRONG OPEN : %d\n", file_open("your_mom.enormous"));
-
-        printf("EXIST : %d\n", file_exists("makefile"));
-        printf("WRONG EXIST : %d\n", file_exists("your_mom.enormous"));
-
-        //printf("SEEK : %d\n", file_seek(fd, 96));
-        printf("WRONG SEEK : %d\n", file_seek(fd, 322454245));
-
-        char buffer[1000];
-        printf("CUL : %d\n", file_read(fd, &buffer, 100));
-        printf("READ CUL : %s\n", buffer);
-
-        //while(file_read(fd, &buffer, 100) > 0)
-        //    printChar(buffer);
-
-        file_close(fd);
+        //THIS PART NEEDS TO BE TAKEN OFF AFTER THOMAS HAS ACKNOWLEDGED HOW FUCKING CASH IT IS
+        printf("Available files :\n");
 
         file_iterator_t iterator = file_iterator();
         while(file_has_next(&iterator)) {
             char filename[FILENAME_MAXSIZE];
             file_next(filename, &iterator);
-            printf("ITERATING : %s\n", filename);
+            printf("- %s\n", filename);
         }
         if(iterator.state == FINISHED)
-            printf("ALL WENT WELL\n");
+            printf("----------\n");
 
+        int fd = file_open(".gitignore");
+        printf("OPEN .gitignore : OPENED TO FD #%d\n", fd);
+        printf("EXIST makefile : %d\n", file_exists("makefile"));
+        printf("EXIST yourmom.enormous : %d\n", file_exists("yourmom.enormous"));
+        printf("SEEK .gitignore, 23 bytes : %d\n", file_seek(fd, 23));
+
+        stat_t stat;
+        if(file_stat(".gitignore", &stat) == -1)
+            printf("Failed to find file\n");
+        else
+            printf("Stat for '%s' file size : %d bytes. CONTENT : \n", stat.name, stat.size);
+
+        char buffer = 0;
+        while(file_read(fd, &buffer, 1) > 0)
+            printChar(buffer);
+        printf("\n");
+
+        file_close(fd);
+        //END OF FUCKING CASH PART
+
+        moveCursor(0, 24);
         printChar('>');
         int stored = 0;
         int typed = 0;
