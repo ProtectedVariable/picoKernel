@@ -23,7 +23,7 @@ int main(int argc, char const *argv[]) {
                                 inode_t inode;
                                 getInodeBlock(sb.blockSize, sb.inodeList + i * sb.blockSize + j * 8 + k, sb.inodeList, &inode, diskFile);
                                 if(strcmp(inode.name, argv[1]) == 0) {
-                                    printf("%s\n", "A file with this name is already on the disk !");
+                                    printf("A file with this name is already on the disk !\n");
                                     return 1;
                                 }
                             }

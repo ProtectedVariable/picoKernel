@@ -20,7 +20,6 @@ int main(int argc, char const *argv[]) {
                             inode_t inode;
                             getInodeBlock(sb.blockSize, sb.inodeList + i * sb.blockSize + j * 8 + k, sb.inodeList, &inode, diskFile);
                             if(strcmp(inode.name, argv[1]) == 0) {
-                                printf("Found File\n");
 
                                 int iblockID = 0;
                                 int newIndirect = 1;
@@ -57,6 +56,7 @@ int main(int argc, char const *argv[]) {
                                 writeSuperblock(&sb, diskFile, sb.blockSize);
                                 return 0;
                             }
+                            printf("This file wasn't on the disk");
                         }
                     }
                 }
