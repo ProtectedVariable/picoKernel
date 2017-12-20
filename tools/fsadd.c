@@ -13,16 +13,32 @@ int main(int argc, char const *argv[]) {
             superblock_t sb;
             readSuperblock(diskFile, &sb);
             if(sb.magic == SUPERBLOCK_MAGIC) {
+                //check if no file with this name is on the disk
+                for (int i = 0; i < sb.inodeBitmapSize; i++) {
+                    bitmap_t bm;
+                    getBitmapBlock(sb.blockSize, &bm, sb.inodeBitmapOffset + i, diskFile);
+                    for (int j = 0; j < sb.blockSize; j++) {
+                        for (int k = 0; k < 8; k++) {
+                            if(bm.bitmap[j] & (1 << k)) {
+                                inode_t inode;
+                                getInodeBlock(sb.blockSize, sb.inodeList + i * sb.blockSize + j * 8 + k, sb.inodeList, &inode, diskFile);
+                                if(strcmp(inode.name, argv[1]) == 0) {
+                                    printf("%s\n", "A file with this name is already on the disk !");
+                                    return 1;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //We can add the file
                 int iNodeID = 0;
                 allocBlock(sb.inodeBitmapSize, sb.inodeBitmapOffset, sb.blockSize, diskFile, &iNodeID);
                 sb.inodesCount++;
 
                 inode_t file;
-                memset(file.name, 0, FILENAME_MAXSIZE);
+                memset(&file, 0, sizeof(file));
                 strcpy(file.name, argv[1]);
-                memset(file.blocks, 0, DIRECT_BLOCK_COUNT * sizeof(uint32_t));
-                memset(file.indirectBlocks, 0, INDIRECT_BLOCK_COUNT * sizeof(uint32_t));
-                file.exactSize = 0;
 
                 char buffer[sb.blockSize];
                 int bytesRead = 0;
@@ -30,6 +46,7 @@ int main(int argc, char const *argv[]) {
                 int iblockID = 0;
                 int newIndirect = 1;
                 int iOffset = 0;
+                //Read the file block by block
                 while ((bytesRead = fread(buffer, 1, sizeof(buffer), localFile)) > 0) {
                     file.exactSize += bytesRead;
                     int dataID = -1;
