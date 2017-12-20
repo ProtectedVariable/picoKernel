@@ -45,7 +45,7 @@ static void read_block(uint offset, uint8_t* dest) {
 		read_sector(sectorOffset + i, read);
 		memcpy((void*) dest + (i * SECTOR_SIZE), read, SECTOR_SIZE);
 	}
-} 
+}
 
 void filesystem_init() {
 	read_sector(0, &superblock);
@@ -75,7 +75,7 @@ int file_stat(char *filename, stat_t *stat) {
 	if(getInodeFromFilename(filename, &inode) == -1)
 		return -1;
 	stat->name = filename;
-	stat->size = inode.size;
+	stat->size = inode.exactSize;
 	return 0;
 }
 
@@ -107,10 +107,10 @@ int file_read(int fd, void *buf, uint count) {
 
 	file_descriptor_t* descriptor = &(fileDescriptorTable[fd]);
 
-	if(descriptor->currentByte >= descriptor->inode.size)
+	if(descriptor->currentByte >= descriptor->inode.exactSize)
 		return 0;
-	if(descriptor->currentByte + count > descriptor->inode.size)
-		count -= (descriptor->currentByte + count) - descriptor->inode.size;
+	if(descriptor->currentByte + count > descriptor->inode.exactSize)
+		count -= (descriptor->currentByte + count) - descriptor->inode.exactSize;
 
 	uint startBlock = descriptor->currentByte / superblock.blockSize;
 	uint endBlock = (descriptor->currentByte + count) / superblock.blockSize;
@@ -138,8 +138,8 @@ int file_read(int fd, void *buf, uint count) {
 			descriptor->currentByte += count;
 		}
 		else if(i == startBlock) {
-			memcpy(buf + byteCount, 
-				&(block[descriptor->currentByte % superblock.blockSize]), 
+			memcpy(buf + byteCount,
+				&(block[descriptor->currentByte % superblock.blockSize]),
 				superblock.blockSize - (descriptor->currentByte % superblock.blockSize));
 			byteCount += superblock.blockSize - (descriptor->currentByte % superblock.blockSize);
 			descriptor->currentByte += superblock.blockSize - (descriptor->currentByte % superblock.blockSize);
@@ -160,7 +160,7 @@ int file_read(int fd, void *buf, uint count) {
 }
 
 int file_seek(int fd, uint offset) {
-	if(isFDWrong(fd) || offset >= fileDescriptorTable[fd].inode.size)
+	if(isFDWrong(fd) || offset >= fileDescriptorTable[fd].inode.exactSize)
 		return -1;
 	fileDescriptorTable[fd].currentByte = offset;
 	return fileDescriptorTable[fd].currentByte;
@@ -209,7 +209,7 @@ void file_next(char *filename, file_iterator_t *it) {
 			it->state = FINISHED;
 			return;
 		}
-		
+
 		it->nextInode = nextInode;
 	}
 
