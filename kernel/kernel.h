@@ -15,6 +15,8 @@
 #include "pio.h"
 #include "filesystem.h"
 
+
+void keyboardRoutine();
 /**
  * Entry point of the kernel
  * @param inf grub infomations
