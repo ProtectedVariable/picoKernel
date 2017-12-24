@@ -62,8 +62,8 @@ void kernelEntry(multiboot_info_t* inf) {
     printf("Timer Initialized\n");
     sti();
     printf("Interruptions now active\n");
+    printf("Memory available: %d KB\n", inf->mem_upper);
     #ifndef TEST
-        printf("Memory available: %d KB\n", inf->mem_upper);
         printf("Files available:\n");
 
         file_iterator_t iterator = file_iterator();

@@ -7,29 +7,99 @@
 static void testDisplay();
 static void testUtil();
 static void testExceptions();
+static void testFileSystem();
+static void pause();
 
 void test() {
+    testFileSystem();
     testDisplay();
     testUtil();
     testExceptions();
 }
 
+static void pause() {
+    setColor(DARK_GREY);
+    printf("\n\nPress key to launch next test\n");
+    setColor(WHITE);
+    getc();
+}
+
 static void testExceptions() {
-    printf("Now let's print 5 / 0 => ");
-    printf("%d\n", 5 / 0    );
+    clearScreen();
+    moveCursor(0, 0);
+    printf("Now let's print 5 / 0 and kill our whole kernel (end of tests) => ");
+    printf("%d\n", 5 / 0);
+}
+
+static void testFileSystem() {
+    clearScreen();
+    moveCursor(0, 0);
+    int fdA = file_open("LargeFile");
+    int fdB = file_open("VeryLargeFile");
+    printf("Large File fd #%d, Max Size File fd #%d\n", fdA, fdB);
+    printf("Does file \"makefile\" exists ? %d\n", file_exists("makefile"));
+    printf("Does file \"yomomma.enormous\" exists ? %d\n", file_exists("yomomma.enormous"));
+
+    stat_t stat;
+    file_stat("LargeFile", &stat);
+    printf("Stats of \"LargeFile\" -> name : %s, size %d\n", stat.name, stat.size);
+    file_stat("VeryLargeFile", &stat);
+    printf("Stats of \"VeryLargeFile\" -> name : %s, size %d\n", stat.name, stat.size);
+
+    printf("Seek byte 1000 for \"VeryLargeFile\" -> %d\n", file_seek(fdB, 1000));
+
+    pause();
+
+    char bytes[10000];
+    int count = 0;
+    int total = 0;
+    while((count = file_read(fdA, bytes, 10000)) > 0) {
+        total += count;
+        printf("Read %d bytes, total : %d\n", count, total);
+        int test = 1;
+        for(int i = 0 ; i < count ; i++){
+            if(bytes[i] != 'a')
+                test = 0;
+        }
+        if(!test)
+            printf("Error in bytes\n");
+    }
+    file_close(fdA);
+
+    pause();
+
+    count = 0;
+    total = 0;
+    while((count = file_read(fdB, bytes, 10000)) > 0) {
+        total += count;
+        printf("Read %d bytes, total : %d\n", count, total);
+        int test = 1;
+        for(int i = 0 ; i < count ; i++){
+            if(bytes[i] != 'b')
+                test = 0;
+        }
+        if(!test)
+            printf("Error in bytes\n");
+    }
+    file_close(fdB);
+    pause();
+
+    printf("Trying to read closed file : %d", file_read(fdA, bytes, 100));
+    pause();
 }
 
 
 static void testDisplay() {
-    initDisplay();
+    clearScreen();
+    moveCursor(0, 0);
     printf("Let's count in hex !\n");
-    for (int i = 0; i < 130; i++) {
+    for (int i = 0; i <= 115; i++) {
         printf("%d = %x\t", i, i);
     }
-    sleep(4000);
+    pause();
     printf("Good");
     clearScreen();
-    moveCursor(0, 23);
+    moveCursor(0, 24);
     printf("Let's use colors !\n");
     setColor(BLACK);printString("Black");
     setColor(BLUE);printString("Blue");
@@ -71,11 +141,14 @@ static void testDisplay() {
     setBackground(LIGHT_RED);printString("LIGHT_RED");
     setBackground(LIGHT_MAGENTA);printString("LIGHT_MAGENTA");
     setBackground(YELLOW);printString("Yellow");
-    setBackground(WHITE);printString("White\n");
-    setBackground(BLACK);
+    setBackground(WHITE);printString("White");
+    setBackground(BLACK);printString("\n");
+    pause();
 }
 
 static void testUtil() {
+    clearScreen();
+    moveCursor(0, 0);
     printf("Testing Util functions\n");
     printf("STRCMP Test:");
     if(!(strcmp("", "") == 0)) {
@@ -105,5 +178,6 @@ static void testUtil() {
     } else {
         printf("OK\n");
     }
+    pause();
 }
 #endif

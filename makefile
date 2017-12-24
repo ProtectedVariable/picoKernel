@@ -7,7 +7,7 @@ TEST=
 all: picok.iso fs.img
 
 test: TEST=-DTEST
-test: run
+test: clean run
 
 run: all
 	tools/fs_info fs.img

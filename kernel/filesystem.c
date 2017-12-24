@@ -121,24 +121,26 @@ int file_read(int fd, void *buf, uint count) {
 		uint8_t block[superblock.blockSize];
 		if(i < DIRECT_BLOCK_COUNT)
 			read_block(superblock.dataBlockOffset + descriptor->inode.blocks[i], block);
-		else if(i < DIRECT_BLOCK_COUNT + (INDIRECT_BLOCK_COUNT * (superblock.blockSize / sizeof(indirectBlock_t)))) {
+		else if(i < DIRECT_BLOCK_COUNT + (INDIRECT_BLOCK_COUNT * (superblock.blockSize / sizeof(uint32_t)))) {
 			indirectBlock_t indirectBlock;
-			int indirectBlockIndex = (i - DIRECT_BLOCK_COUNT) / (superblock.blockSize / sizeof(indirectBlock_t));
-			read_block(superblock.dataBlockOffset + descriptor->inode.indirectBlocks[indirectBlockIndex], (uint8_t*) &indirectBlock);
+			uint32_t addr[superblock.blockSize / sizeof(uint32_t)];
+			indirectBlock.addresses = addr;
 
+			int indirectBlockIndex = (i - DIRECT_BLOCK_COUNT) / (superblock.blockSize / sizeof(uint32_t));
+			read_block(superblock.dataBlockOffset + descriptor->inode.indirectBlocks[indirectBlockIndex], (uint8_t*) indirectBlock.addresses);
 			int positionInBlock = (i - DIRECT_BLOCK_COUNT) % (superblock.blockSize / sizeof(indirectBlock_t));
 			read_block(superblock.dataBlockOffset + indirectBlock.addresses[positionInBlock], block);
 		}
 		else
 			return -1;
 
-		if(i == startBlock && (descriptor->currentByte % superblock.blockSize) + count < superblock.blockSize) {
+		if(i == startBlock && i == endBlock) {
 			memcpy(buf + byteCount, &(block[descriptor->currentByte % superblock.blockSize]), count);
 			byteCount += count;
 			descriptor->currentByte += count;
 		}
 		else if(i == startBlock) {
-			memcpy(buf + byteCount,
+			memcpy(buf,
 				&(block[descriptor->currentByte % superblock.blockSize]),
 				superblock.blockSize - (descriptor->currentByte % superblock.blockSize));
 			byteCount += superblock.blockSize - (descriptor->currentByte % superblock.blockSize);
@@ -146,13 +148,13 @@ int file_read(int fd, void *buf, uint count) {
 		}
 		else if(i == endBlock) {
 			memcpy(buf + byteCount, block, count - byteCount);
-			byteCount += count;
-			descriptor->currentByte += count;
+			descriptor->currentByte += count - byteCount;
+			byteCount += count - byteCount;
 		}
 		else {
-			memcpy(buf + byteCount, block, superblock.blockSize * SECTOR_SIZE);
-			byteCount += superblock.blockSize * SECTOR_SIZE;
-			descriptor->currentByte += superblock.blockSize * SECTOR_SIZE;
+			memcpy(buf + byteCount, block, superblock.blockSize);
+			byteCount += superblock.blockSize;
+			descriptor->currentByte += superblock.blockSize;
 		}
 	}
 
