@@ -13,10 +13,10 @@ run: all
 	tools/fs_info fs.img
 	qemu-system-i386 -cdrom picok.iso -drive file=fs.img,index=0,media=disk,format=raw
 
-$(BOOT_DIR)/kernel.elf: kernel/kernel.elf
+$(BOOT_DIR)/kernel.elf: $(SUBDIRS)
 	cp kernel/kernel.elf $(BOOT_DIR)/kernel.elf
 
-picok.iso: $(BUILD_DIR) $(SUBDIRS) $(GRUB_DIR)/menu.lst $(GRUB_DIR)/stage2_eltorito $(BOOT_DIR)/kernel.elf
+picok.iso: $(BUILD_DIR) $(GRUB_DIR)/menu.lst $(GRUB_DIR)/stage2_eltorito $(BOOT_DIR)/kernel.elf
 	genisoimage -R -b boot/grub/stage2_eltorito -input-charset utf8 -no-emul-boot -boot-info-table -o picok.iso picok
 
 fs.img: splashscreen LargeFile VeryLargeFile
@@ -42,4 +42,4 @@ clean:
 	-rm -r picok -f
 	-rm fs.img -f
 
-.PHONY: all clean test
+.PHONY: all clean test $(SUBDIRS)
