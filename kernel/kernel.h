@@ -14,6 +14,7 @@
 #include "pic.h"
 #include "pio.h"
 #include "filesystem.h"
+#include "fsdata.h"
 
 
 void keyboardRoutine();

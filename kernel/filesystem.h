@@ -42,13 +42,10 @@ extern int file_stat(char *filename, stat_t *stat);
 extern bool file_exists(char *filename);
 extern int file_open(char *filename);
 extern int file_read(int fd, void *buf, uint count);
-// Essaie de lire count bytes depuis le fichier référencé par
-// fd et les place dans le buffer buf.
-// Renvoie le nombre de bytes lus, ou 0 en cas de fin de fichier, ou -1 en cas d’erreur.
-
 extern int file_seek(int fd, uint offset);
 extern void file_close(int fd);
-extern file_iterator_t file_iterator();extern bool file_has_next(file_iterator_t *it);
+extern file_iterator_t file_iterator();
+extern bool file_has_next(file_iterator_t *it);
 extern void file_next(char *filename, file_iterator_t *it);
 
 #endif

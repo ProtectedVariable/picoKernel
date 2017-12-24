@@ -56,11 +56,11 @@ int main(int argc, char const *argv[]) {
                                 writeSuperblock(&sb, diskFile, sb.blockSize);
                                 return 0;
                             }
-                            printf("This file wasn't on the disk");
                         }
                     }
                 }
             }
+            printf("This file wasn't on the disk\n");
         }
     }
     return 1;
