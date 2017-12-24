@@ -11,9 +11,9 @@ static void testFileSystem();
 static void pause();
 
 void test() {
-    testFileSystem();
     testDisplay();
     testUtil();
+    testFileSystem();
     testExceptions();
 }
 
@@ -37,7 +37,7 @@ static void testFileSystem() {
     int fdA = file_open("LargeFile");
     int fdB = file_open("VeryLargeFile");
     printf("Large File fd #%d, Max Size File fd #%d\n", fdA, fdB);
-    printf("Does file \"makefile\" exists ? %d\n", file_exists("makefile"));
+    printf("Does file \"splashscreen\" exists ? %d\n", file_exists("splashscreen"));
     printf("Does file \"yomomma.enormous\" exists ? %d\n", file_exists("yomomma.enormous"));
 
     stat_t stat;

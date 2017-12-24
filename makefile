@@ -20,7 +20,7 @@ picok.iso: $(BUILD_DIR) $(SUBDIRS) $(GRUB_DIR)/menu.lst $(GRUB_DIR)/stage2_eltor
 	genisoimage -R -b boot/grub/stage2_eltorito -input-charset utf8 -no-emul-boot -boot-info-table -o picok.iso picok
 
 fs.img: splashscreen LargeFile VeryLargeFile
-	tools/fs_create picoFS 512 fs.img 1000 4096
+	tools/fs_create picoFS 1024 fs.img 1000 4096
 	tools/fs_add splashscreen fs.img
 	tools/fs_add LargeFile fs.img
 	tools/fs_add VeryLargeFile fs.img
@@ -42,4 +42,4 @@ clean:
 	-rm -r picok -f
 	-rm fs.img -f
 
-.PHONY: all clean test
+.PHONY: all clean test $(SUBDIRS)

@@ -83,7 +83,6 @@ void kernelEntry(multiboot_info_t* inf) {
             printf("Y NO SPLASHSCREEN ????????????????\n");
         } else {
             char splashBuf = 0;
-            //printf("%d\n", file_read(fd, &splashBuf, 1));
             while(file_read(fd, &splashBuf, 1) > 0)
                 printChar(splashBuf);
             file_close(fd);

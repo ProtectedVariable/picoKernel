@@ -2,17 +2,33 @@
 
 static superblock_t superblock;
 static bitmap_t inodeBitmap;
-//static bitmap_t dataBitmap;
 static file_descriptor_t fileDescriptorTable[FILE_DESCRIPTORS_COUNT];
 
+/**
+ * Get an inode from the filesystem given an inode index
+ * @param  inodeNum   	The index of an inode to get
+ * @param  inode 		The structure to which the inode will be printed
+ * @return           	-1 in case of failure, 0 otherwise
+ */
 inline static void getInode(int inodeNum, inode_t* inode) {
 	read_sector((superblock.inodeList * (superblock.blockSize / SECTOR_SIZE)) + inodeNum, inode);
 }
 
+/**
+ * Test if a file descriptor is in the correct range or closed
+ * @param  fd   The index of the file descriptor to test
+ * @return      true if the file descriptor is wrong, false otherwise
+ */
 inline static bool isFDWrong(int fd) {
 	return fd < 0 || fd > FILE_DESCRIPTORS_COUNT || fileDescriptorTable[fd].state == CLOSED;
 }
 
+/**
+ * Search for the index of the inode representing a certain filename
+ * @param  filename   	The name of the file to look for
+ * @param  inode 		The structure of an inode to be loaded when found
+ * @return           	-1 if the file is not found, the number of the inode otherwise
+ */
 static int getInodeFromFilename(char *filename, inode_t* inode) {
 	for(uint i = 0 ; i <= superblock.inodeMax / 8 ; i++) {
 		for(int j = 0 ; j < 8 ; j++) {
@@ -27,6 +43,11 @@ static int getInodeFromFilename(char *filename, inode_t* inode) {
 	return -1;
 }
 
+/**
+ * Get the inode number of the next file represented by an iterator
+ * @param  it   The iterator to use
+ * @return      -1 if there are no more file, or the index of the inode
+ */
 static int iterateToNextInode(file_iterator_t *it) {
 	for(uint i = it->currentInodeIndex + 1 ; i < superblock.inodeMax ; i++) {
 		uint byteIndex = i / 8;
@@ -37,6 +58,11 @@ static int iterateToNextInode(file_iterator_t *it) {
 	return -1;
 }
 
+/**
+ * Get the bytes of a block from the filesystem sector by sector
+ * @param  offset   The index of the block to retrieve
+ * @param  dest 	The buffer to receive the bytes
+ */
 static void read_block(uint offset, uint8_t* dest) {
 	uint8_t read[SECTOR_SIZE];
 	int sectorByBlock = superblock.blockSize / SECTOR_SIZE;

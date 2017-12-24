@@ -16,12 +16,15 @@
 #include "filesystem.h"
 #include "fsdata.h"
 
-
-void keyboardRoutine();
 /**
  * Entry point of the kernel
  * @param inf grub infomations
  */
 extern void kernelEntry(multiboot_info_t* inf);
+
+/**
+ * Function to actively wait for keyboard input and translate it into characters
+ */
+extern void keyboardRoutine();
 
 #endif

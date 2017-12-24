@@ -12,6 +12,9 @@
 #define FS_VERSION 1
 #define INODE_BITMAP_OFFSET 1
 
+/**
+ * Structure representing the superblock
+ */
 typedef struct superblock_st {
 	uint32_t magic;
 	uint32_t version;
@@ -29,6 +32,9 @@ typedef struct superblock_st {
 	char label[474]; //long enough to reach 512 bytes
 }__attribute__((packed)) superblock_t;
 
+/**
+ * Structure representing an inode
+ */
 typedef struct inode_st {
 	char name[FILENAME_MAXSIZE];
 	uint32_t blocks[DIRECT_BLOCK_COUNT];
@@ -36,13 +42,18 @@ typedef struct inode_st {
 	uint32_t exactSize;
 }__attribute__((packed)) inode_t;
 
+/**
+ * Structure representing an indirect block
+ */
 typedef struct indirectBlock_st {
 	uint32_t* addresses;
 }__attribute__((packed)) indirectBlock_t;
 
+/**
+ * Structure representing a block of bitmap
+ */
 typedef struct bitmap_st {
 	uint8_t* bitmap;
 }__attribute__((packed)) bitmap_t;
-
 
 #endif /* end of include guard: _FS_DATA_H_ */
