@@ -4,9 +4,9 @@
 #ifndef _CURSOR_H_
 #define _CURSOR_H_
 
-#include "util.h"
 #include "pio.h"
 #include "display.h"
+#include "../common/util.h"
 
 #define CURSOR_CMD 0x3d4
 #define CURSOR_DATA 0x3d5

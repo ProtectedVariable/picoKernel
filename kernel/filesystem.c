@@ -35,11 +35,13 @@ static int getInodeFromFilename(char *filename, inode_t* inode) {
 			if((inodeBitmap.bitmap[i] & (1 << j)) == 0)
 				continue;
 			getInode(i * 8 + j, inode);
-			if(strcmp(inode->name, filename) == 0)
+			if(strcmp(inode->name, filename) == 0) {
+				printf("%s found\n", filename);
 				return i * 8 + j;
+			}
 		}
 	}
-
+	printf("%s not found\n", filename);
 	return -1;
 }
 
@@ -112,8 +114,9 @@ bool file_exists(char *filename) {
 
 int file_open(char *filename) {
 	inode_t inode;
-	if(getInodeFromFilename(filename, &inode) == -1)
+	if(getInodeFromFilename(filename, &inode) == -1) {
 		return -1;
+	}
 
 	for(int i = 0 ; i < FILE_DESCRIPTORS_COUNT ; i++) {
 		if(fileDescriptorTable[i].state == CLOSED) {
@@ -143,7 +146,7 @@ int file_read(int fd, void *buf, uint count) {
 
 	int byteCount = 0;
 
-	for(uint i = startBlock ; i <= endBlock ; i++) {
+	for(uint i = startBlock; i <= endBlock ; i++) {
 		uint8_t block[superblock.blockSize];
 		if(i < DIRECT_BLOCK_COUNT)
 			read_block(superblock.dataBlockOffset + descriptor->inode.blocks[i], block);

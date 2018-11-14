@@ -1,5 +1,6 @@
 #include "fsutil.h"
 #include <stdio.h>
+#include <libgen.h>
 #include <stdlib.h>
 
 int main(int argc, char const *argv[]) {
@@ -8,6 +9,7 @@ int main(int argc, char const *argv[]) {
     }
     FILE* diskFile = fopen(argv[2], "rb+");
     FILE* localFile = fopen(argv[1], "rb");
+    char* filename = basename((char*)argv[1]);
     if(diskFile != NULL) {
         if(localFile != NULL) {
             superblock_t sb;
@@ -22,7 +24,7 @@ int main(int argc, char const *argv[]) {
                             if(bm.bitmap[j] & (1 << k)) {
                                 inode_t inode;
                                 getInodeBlock(sb.blockSize, sb.inodeList + i * sb.blockSize + j * 8 + k, sb.inodeList, &inode, diskFile);
-                                if(strcmp(inode.name, argv[1]) == 0) {
+                                if(strcmp(inode.name, filename) == 0) {
                                     printf("A file with this name is already on the disk !\n");
                                     return 1;
                                 }
@@ -38,7 +40,7 @@ int main(int argc, char const *argv[]) {
 
                 inode_t file;
                 memset(&file, 0, sizeof(file));
-                strcpy(file.name, argv[1]);
+                strcpy(file.name, filename);
 
                 char buffer[sb.blockSize];
                 int bytesRead = 0;

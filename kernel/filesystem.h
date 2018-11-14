@@ -2,6 +2,7 @@
 #define PROTECC_ATTACC_INCLUDECC
 
 #include "../common/types.h"
+#include "../common/picofs.h"
 #include "x86.h"
 #include "ide.h"
 #include "display.h"
@@ -16,32 +17,6 @@ typedef enum file_state_st {
 	OPENED,
 	CLOSED
 } file_state_t;
-
-/**
- * Enumeration representing the state of an iterator
- */
-typedef enum iterator_state_st {
-	CREATED,
-	ITERATING,
-	FINISHED
-} iterator_state_t;
-
-/**
- * Structure representing the informations on a file
- */
-typedef struct stat_st {
-	char* name;
-	uint size;
-} stat_t;
-
-/**
- * Structure representing a file iterator
- */
-typedef struct file_iterator_st {
-	uint currentInodeIndex;
-	int nextInode;
-	iterator_state_t state;
-} file_iterator_t;
 
 /**
  * Structure representing a file descriptor

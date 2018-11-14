@@ -4,6 +4,7 @@
 #ifndef _DISPLAY_H_
 #define _DISPLAY_H_
 #include "../common/types.h"
+#include "../common/util.h"
 #include "cursor.h"
 
 #define BLACK 0
@@ -22,6 +23,23 @@
 #define LIGHT_MAGENTA 13
 #define YELLOW 14
 #define WHITE 15
+
+#ifndef FRAMBUFFER_WIDTH
+#define FRAMBUFFER_WIDTH 80
+#endif
+
+#ifndef FRAMBUFFER_SIZE
+#define FRAMBUFFER_SIZE 0xFA0
+#endif
+
+#ifndef FRAMBUFFER_HEIGHT
+#define FRAMBUFFER_HEIGHT 25
+#endif
+
+#ifndef FRAMBUFFER_START
+#define FRAMBUFFER_START ((char*) 0xB8000)
+#endif
+
 
 /**
  * Initialize the display and puts the cursor to position 0,0 (upper left)
@@ -75,7 +93,7 @@ extern void clearScreen();
  * @param format  Format of the string
  * @param VARARGS arguments to format into the string
  */
-extern void printf(char* format, ...);
+extern void printf(const char* format, ...);
 
 /**
  * Scrolls the screen, the new line will be set to the current background color

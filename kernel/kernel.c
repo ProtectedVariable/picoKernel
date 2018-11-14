@@ -27,7 +27,6 @@ void keyboardRoutine() {
         }
         else if(typed == '\n') {
             printChar(typed);
-            printChar('>');
         }
         else if(stored == 0 && (typed == 94 || typed == 96 || typed == 249)) {
             stored = typed;
@@ -83,13 +82,20 @@ void kernelEntry(multiboot_info_t* inf) {
             printf("Y NO SPLASHSCREEN ????????????????\n");
         } else {
             char splashBuf = 0;
-            while(file_read(fd, &splashBuf, 1) > 0)
-                printChar(splashBuf);
+            //while(file_read(fd, &splashBuf, 1) > 0)
+            //    printChar(splashBuf);
             file_close(fd);
         }
+
         moveCursor(0, 24);
-        printChar('>');
-        keyboardRoutine();
+        if(task_exec("shell") == -1) {
+            printString("There was an error lauching the shell...");
+            setColor(LIGHT_GREY);
+            printf("\n\nSystem is now shutting down...\n");
+            sleep(2000);
+            //clearScreen();
+            halt();
+        }
     #else
         test();
     #endif

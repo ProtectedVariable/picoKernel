@@ -5,22 +5,6 @@
 #define _UTIL_H_
 #include "../common/types.h"
 
-#ifndef FRAMBUFFER_WIDTH
-#define FRAMBUFFER_WIDTH 80
-#endif
-
-#ifndef FRAMBUFFER_SIZE
-#define FRAMBUFFER_SIZE 0xFA0
-#endif
-
-#ifndef FRAMBUFFER_HEIGHT
-#define FRAMBUFFER_HEIGHT 25
-#endif
-
-#ifndef FRAMBUFFER_START
-#define FRAMBUFFER_START ((char*) 0xB8000)
-#endif
-
 /**
  * Sets a memory zone to a certain value
  * @param dst   pointer to the beginning of the memory zone
@@ -70,5 +54,9 @@ extern int c2Dto1D(int x, int y, int xmax);
  * @param radix  base to convert to
  */
 extern char* itoa(char* buffer, int n, int radix);
+
+extern int atoi(const char* str);
+
+extern int strlen(const char* str);
 
 #endif /* end of include guard: _UTIL_H_ */

@@ -39,35 +39,7 @@ void printChar(char c) {
     incrementCursor();
 }
 
-void setColor(int textcolor) {
-    color &= 0xF0;
-    color |= textcolor;
-}
-
-int getColor() {
-    return color & 0x0F;
-}
-
-void setBackground(int backcolor) {
-    color &= 0x0F;
-    color |= backcolor << 4;
-}
-
-int getBackground() {
-    return color & 0xF0 >> 4;
-}
-
-void clearScreen() {
-    for (int i = 0; i < FRAMBUFFER_SIZE; i++) {
-        if(i % 2 == 1) {
-            memset(FRAMBUFFER_START + i, color, 1);
-        } else {
-            memset(FRAMBUFFER_START + i, 0, 1);
-        }
-    }
-}
-
-void printf(char* format, ...) {
+void printf(const char* format, ...) {
     char image[12];
     uint32_t* arg = ((uint32_t*)&format);
     arg++;
@@ -97,7 +69,35 @@ void printf(char* format, ...) {
             i++;
         }
         else
-        printChar(format[i]);
+            printChar(format[i]);
+    }
+}
+
+void setColor(int textcolor) {
+    color &= 0xF0;
+    color |= textcolor;
+}
+
+int getColor() {
+    return color & 0x0F;
+}
+
+void setBackground(int backcolor) {
+    color &= 0x0F;
+    color |= backcolor << 4;
+}
+
+int getBackground() {
+    return color & 0xF0 >> 4;
+}
+
+void clearScreen() {
+    for (int i = 0; i < FRAMBUFFER_SIZE; i++) {
+        if(i % 2 == 1) {
+            memset(FRAMBUFFER_START + i, color, 1);
+        } else {
+            memset(FRAMBUFFER_START + i, 0, 1);
+        }
     }
 }
 

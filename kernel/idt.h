@@ -9,6 +9,7 @@
 #include "pic.h"
 #include "keyboard.h"
 #include "timer.h"
+#include "syscall_asm.h"
 
 #define IDT_ENTRY_COUNT 256
 

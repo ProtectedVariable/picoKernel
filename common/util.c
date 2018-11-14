@@ -3,8 +3,6 @@
 */
 #include "util.h"
 
-#include "display.h"
-
 void* memset(void* dst, int value, uint count) {
     if(count <= 0) return NULL;
     char* ptr = (char*) dst;
@@ -94,4 +92,42 @@ char* itoa(char* buffer, int n, int radix) {
     }
     buffer[currentIndex] = 0;
     return buffer;
+}
+
+int atoi(const char* str) {
+	int result = 0;
+	unsigned int digit;
+	bool negative;
+
+	if (*str == '-') {
+		negative = true;
+		str += 1;
+	} else {
+		negative = false;
+		if (*str == '+') {
+			str += 1;
+		}
+	}
+	do {
+		digit = *str - '0';
+		if (digit > 9) {
+			break;
+		}
+		result = (10 * result) + digit;
+	} while (str += 1);
+
+	if (negative) {
+		return -result;
+	}
+	return result;
+}
+
+int strlen(const char* string) {
+	int i = 0;
+	const char* str = string;
+	while (*str) {
+		i++;
+		str++;
+	}
+	return i;
 }

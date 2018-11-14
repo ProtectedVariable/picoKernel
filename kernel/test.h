@@ -6,7 +6,7 @@
 #define _TEST_H_
 
 #include "display.h"
-#include "util.h"
+#include "../common/util.h"
 #include "timer.h"
 #include "filesystem.h"
 #include "keyboard.h"
