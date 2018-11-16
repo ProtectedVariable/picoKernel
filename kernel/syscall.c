@@ -71,13 +71,19 @@ static int syscall_puts(char* string) {
 	return 0;
 }
 
-// System call handler: call the appropriate system call according to the nb argument.
-// Called by the assembly code _syscall_handler
+/**
+ * System call handler, calls the appropriate system call
+ * @param nb The number of the syscall to launch
+ * @param arg1 First arg of the syscall
+ * @param arg2 Second arg of the syscall
+ * @param arg3 Third arg of the syscall
+ * @param arg4 Fourth arg of the syscall
+ * @param caller_tss_selector The TSS selector of the calling task
+ * @return The return value of the syscall
+ */
 int syscall_handler(syscall_t nb, uint32_t arg1, uint32_t arg2, uint32_t arg3, uint32_t arg4, uint32_t caller_tss_selector) {
-
 	void* address = (void*) (TASK_ADDR_SPACE * (SELECTOR_TO_GDT_INDEX(caller_tss_selector) - GDT_KERNEL_SIZE) / 2 + TASK_START_ADDRESS);
-
-    switch (nb) {
+	switch (nb) {
 		case SYSCALL_PUTS:
 			UNUSED(arg2);
 			UNUSED(arg3);
@@ -143,5 +149,5 @@ int syscall_handler(syscall_t nb, uint32_t arg1, uint32_t arg2, uint32_t arg3, u
 			UNUSED(arg4);
 			return syscall_sleep(arg1);
 	}
-    return -1;
+	return -1;
 }

@@ -4,7 +4,7 @@
 #include "gdt.h"
 #define ADDRESSABLE_SPACE 0xFFFFF
 
-static gdt_entry_t gdt[5];
+static gdt_entry_t gdt[GDT_KERNEL_ENTRIES + MAX_TASKS * 2];
 static gdt_ptr_t gdt_ptr;
 static tss_t initial_tss;
 static uint8_t initial_tss_kernel_stack[TASK_STACK_SIZE];
@@ -121,7 +121,7 @@ static void task_init(uint id) {
 
 int task_exec(char* filename) {
 	int id;
-	for (id = 0; id < MAX_TASKS; id++) {
+	for (id = 0; id < MAX_TASKS; ++id) {
 		if (tasks[id].free) {
 			break;
 		}
@@ -130,16 +130,12 @@ int task_exec(char* filename) {
 		return -1;
 	}
 	int fd = file_open(filename);
-	if (fd == -1) {
-		printChar('A');
+	if (fd == -1)
 		return -1;
-	}
 	stat_t stat;
 	file_stat(filename, &stat);
-	if (file_read(fd, tasks[id].address, stat.size) == -1) {
-		printChar('B');
+	if (file_read(fd, tasks[id].address, stat.size) == -1)
 		return -1;
-	}
 	tasks[id].free = false;
 	tasks[id].task_tss.eip = 0;
 	tasks[id].task_tss.esp = tasks[id].task_tss.ebp = tasks[id].limit;
@@ -166,7 +162,7 @@ void gdt_init() {
 
 
 	task_ltr(gdt_entry_to_selector(&gdt[3]));
-	for (uint i = 0; i < MAX_TASKS; ++i) {
+	for (uint i = 0; i < MAX_TASKS; i++) {
 		task_init(i);
 	}
 }

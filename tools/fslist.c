@@ -1,6 +1,7 @@
 #include "fsutil.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 int main(int argc, char const *argv[]) {
     if(argc < 2) {
@@ -19,7 +20,7 @@ int main(int argc, char const *argv[]) {
                         if(bm.bitmap[j] & (1 << k)) {
                             inode_t inode;
                             getInodeBlock(sb.blockSize, sb.inodeList + i * sb.blockSize + j * 8 + k, sb.inodeList, &inode, diskFile);
-                            printf("%s: %d bytes (%d bytes on the disk)\n", inode.name, inode.exactSize, (inode.exactSize / sb.blockSize) * sb.blockSize);
+                            printf("%s: %d bytes (%d bytes on the disk)\n", inode.name, inode.exactSize, (int)ceil((float)inode.exactSize / (float)sb.blockSize) * sb.blockSize);
                         }
                     }
                 }

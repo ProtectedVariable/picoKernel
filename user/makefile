@@ -29,6 +29,6 @@ $(BUILD_FOLDER)util.o: ../common/util.c ../common/util.h
 	$(COMPILE) $< -o $@
 
 clean:
-	@-rm *.o shell app
+	@-rm -r -f $(BUILD_FOLDER)
 
 -include $(DEPS)

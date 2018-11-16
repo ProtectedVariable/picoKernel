@@ -20,7 +20,7 @@ $(BOOT_DIR)/kernel.elf: $(SUBDIRS)
 picok.iso: $(BUILD_DIR) $(GRUB_DIR)/menu.lst $(GRUB_DIR)/stage2_eltorito $(BOOT_DIR)/kernel.elf
 	genisoimage -R -b boot/grub/stage2_eltorito -input-charset utf8 -no-emul-boot -boot-info-table -o picok.iso picok
 
-fs.img: splashscreen LargeFile VeryLargeFile
+fs.img: splashscreen LargeFile VeryLargeFile $(APP_BUILD_DIR)app $(APP_BUILD_DIR)shell
 	tools/fs_create picoFS 1024 fs.img 1000 4096
 	tools/fs_add LargeFile fs.img
 	tools/fs_add VeryLargeFile fs.img

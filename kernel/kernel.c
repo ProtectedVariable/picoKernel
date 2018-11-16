@@ -81,22 +81,26 @@ void kernelEntry(multiboot_info_t* inf) {
         if(fd < 0) {
             printf("Y NO SPLASHSCREEN ????????????????\n");
         } else {
-            char splashBuf = 0;
-            //while(file_read(fd, &splashBuf, 1) > 0)
-            //    printChar(splashBuf);
+            char splashBuf[1024];
+            int count = file_read(fd, &splashBuf, 1024);
+            if(count > 0) {
+                for (int i = 0; i < count; i++) {
+                    printChar(splashBuf[i]);
+                }
+            }
             file_close(fd);
         }
 
         moveCursor(0, 24);
-        if(task_exec("shell") == -1) {
+        if(task_exec("shell") < 0) {
             printString("There was an error lauching the shell...");
-            setColor(LIGHT_GREY);
-            printf("\n\nSystem is now shutting down...\n");
-            sleep(2000);
-            //clearScreen();
-            halt();
         }
     #else
         test();
     #endif
+        setColor(LIGHT_GREY);
+        printf("\n\nSystem is now shutting down...\n");
+        sleep(2000);
+        clearScreen();
+        halt();
 }
